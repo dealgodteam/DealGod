@@ -4,6 +4,10 @@
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Prefer runtime-loaded catalog data if available.
+  // Falls back to the globals defined in `data.js`.
+  let PRODUCTS = window.PRODUCTS;
+  let CATEGORIES = window.CATEGORIES;
 
   /* ================================================================
      SECURITY: Input Sanitization
@@ -1420,35 +1424,82 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ================================================================
      INIT
   ================================================================ */
-  validateProducts(PRODUCTS);
-  if (!isValidAffiliateTag(SITE_CONFIG?.affiliateTag)) {
-    console.warn('[DealGod] Affiliate tag is invalid/placeholder. Set a real Amazon Associates tag in data.js before going live.');
-    setTimeout(() => {
-      showToast('⚠️', 'Admin: Set real Amazon affiliate tag before launch.');
-    }, 1200);
+  async function loadCatalogIfPresent() {
+    try {
+      const res = await fetch('/catalog.json', { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data?.products)) PRODUCTS = data.products;
+      if (Array.isArray(data?.categories)) CATEGORIES = data.categories;
+    } catch {
+      // ignore - keep fallback globals from data.js
+    }
   }
-  if (!/^https?:\/\/[^/\s]+/i.test(safeText(SITE_CONFIG?.siteUrl))) {
-    console.warn('[DealGod] SITE_CONFIG.siteUrl is invalid. Update it before go-live.');
-  }
-  renderProducts();
-  updateCompareUI();
-  renderRecentlyViewed();
-  updateCountdowns();
-  setInterval(updateCountdowns, 1000);
-  initCookieConsent();
-  setupMegaSaleBanner();
-  setupAlertModal();
-  setupGiftFinder();
-  if (SITE_CONFIG?.features?.enableFomoPopups) {
-    setupFOMOPopups();
-  }
-  if (SITE_CONFIG?.features?.enablePushPromptMock) {
-    setupPushNotificationsMock();
-  }
-  setupTopDealsPopup();
-  initSearchLogic();
-  initMobileMenu();
 
-  console.log('[DealGod] Security active | Features loaded.');
+  function injectAnalytics() {
+    const a = SITE_CONFIG?.analytics;
+    if (!a || !a.provider) return;
+
+    if (a.provider === 'plausible' && a.domain) {
+      const s = document.createElement('script');
+      s.defer = true;
+      s.setAttribute('data-domain', a.domain);
+      s.src = 'https://plausible.io/js/script.js';
+      document.head.appendChild(s);
+      return;
+    }
+
+    if (a.provider === 'ga4' && a.measurementId) {
+      const s1 = document.createElement('script');
+      s1.async = true;
+      s1.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(a.measurementId)}`;
+      const s2 = document.createElement('script');
+      s2.textContent =
+        `window.dataLayer = window.dataLayer || [];` +
+        `function gtag(){dataLayer.push(arguments);}` +
+        `gtag('js', new Date());` +
+        `gtag('config', '${String(a.measurementId).replace(/'/g, "\\'")}');`;
+      document.head.appendChild(s1);
+      document.head.appendChild(s2);
+    }
+  }
+
+  (async function boot() {
+    await loadCatalogIfPresent();
+
+    validateProducts(PRODUCTS);
+    if (!isValidAffiliateTag(SITE_CONFIG?.affiliateTag)) {
+      console.warn('[DealGod] Affiliate tag is invalid/placeholder. Set a real Amazon Associates tag in data.js before going live.');
+      setTimeout(() => {
+        showToast('⚠️', 'Admin: Set real Amazon affiliate tag before launch.');
+      }, 1200);
+    }
+    if (!/^https?:\/\/[^/\s]+/i.test(safeText(SITE_CONFIG?.siteUrl))) {
+      console.warn('[DealGod] SITE_CONFIG.siteUrl is invalid. Update it before go-live.');
+    }
+
+    injectAnalytics();
+
+    renderProducts();
+    updateCompareUI();
+    renderRecentlyViewed();
+    updateCountdowns();
+    setInterval(updateCountdowns, 1000);
+    initCookieConsent();
+    setupMegaSaleBanner();
+    setupAlertModal();
+    setupGiftFinder();
+    if (SITE_CONFIG?.features?.enableFomoPopups) {
+      setupFOMOPopups();
+    }
+    if (SITE_CONFIG?.features?.enablePushPromptMock) {
+      setupPushNotificationsMock();
+    }
+    setupTopDealsPopup();
+    initSearchLogic();
+    initMobileMenu();
+
+    console.log('[DealGod] Security active | Features loaded.');
+  })();
 });
 

@@ -1,0 +1,49 @@
+backend:
+  name: git-gateway
+  branch: main
+
+publish_mode: editorial_workflow
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "catalog"
+    label: "Deal Catalog"
+    files:
+      - name: "catalog"
+        label: "Categories & Products"
+        file: "catalog.json"
+        format: "json"
+        fields:
+          - label: "Categories"
+            name: "categories"
+            widget: "list"
+            allow_add: true
+            field:
+              label: "Category"
+              name: "category"
+              widget: "string"
+          - label: "Products"
+            name: "products"
+            widget: "list"
+            allow_add: true
+            fields:
+              - { label: "ID", name: "id", widget: "number", value_type: "int", min: 1 }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text", required: false }
+              - { label: "Price", name: "price", widget: "string" }
+              - { label: "Original Price", name: "originalPrice", widget: "string" }
+              - { label: "Discount", name: "discount", widget: "string" }
+              - { label: "Category", name: "category", widget: "string" }
+              - { label: "Rating", name: "rating", widget: "number", value_type: "float", min: 0, max: 5 }
+              - { label: "Reviews", name: "reviews", widget: "number", value_type: "int", required: false }
+              - { label: "Image URL", name: "image", widget: "string", required: false }
+              - { label: "ASIN", name: "asin", widget: "string" }
+              - { label: "Badge", name: "badge", widget: "string", required: false }
+              - { label: "Bank Offer", name: "bankOffer", widget: "string", required: false }
+              - { label: "Deal Ends (ISO)", name: "dealEnds", widget: "string", required: false }
+              - { label: "Deal Score", name: "dealScore", widget: "number", value_type: "int", required: false }
+              - { label: "Price History", name: "priceHistory", widget: "string", required: false }
+              - { label: "Coupon Code", name: "couponCode", widget: "string", required: false }
+

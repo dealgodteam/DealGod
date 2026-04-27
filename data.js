@@ -14,6 +14,13 @@ const SITE_CONFIG = {
     enableFomoPopups: false,      // keep false for production trust
     enablePushPromptMock: false,  // keep false for production
   },
+  // Optional analytics (leave disabled if you don't want tracking)
+  // provider: "plausible" with your domain, OR provider: "ga4" with measurementId
+  analytics: {
+    provider: "", // "plausible" | "ga4"
+    domain: "", // plausible domain, e.g. "dealgod.netlify.app"
+    measurementId: "" // GA4 measurement id, e.g. "G-XXXXXXXXXX"
+  }
 };
 
 // Deal end times (optional - add "dealEnds" to any product for countdown timer)
