@@ -430,15 +430,6 @@ document.addEventListener('DOMContentLoaded', () => {
           data-product-id="${product.id}"
         >
           <span class="btn-share-icon">🔗</span>
-          Share
-        </button>
-        <button
-          class="btn-copy"
-          aria-label="Copy product link"
-          data-copy-link="${affLink}"
-        >
-          <span class="btn-copy-icon">�</span>
-          Copy Link
         </button>
         <button
           class="compare-check ${compareList.includes(product.id) ? 'checked' : ''}"
@@ -446,13 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
           aria-label="Compare product"
           title="Add to comparison"
         >🔄</button>
-        <button
-          class="btn-alert"
-          data-product-id="${product.id}"
-          data-product-title="${escapeHtml(safeTitle)}"
-          aria-label="Set Price Drop Alert"
-          title="Alert me if price drops"
-        >🔔</button>
         <button
           class="btn-wishlist ${wishlisted ? 'wishlisted' : ''}"
           id="wish-btn-${product.id}"
@@ -498,25 +482,6 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       toggleCompare(product.id);
     });
-
-    /* Copy link button */
-    const copyBtn = card.querySelector('[data-copy-link]');
-    if (copyBtn) {
-      copyBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const link = copyBtn.getAttribute('data-copy-link');
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(link).then(() => showToast('📋', 'Link copied to clipboard'));
-        } else {
-          const ta = document.createElement('textarea');
-          ta.value = link; ta.style.position = 'fixed'; ta.style.opacity = '0';
-          document.body.appendChild(ta); ta.select();
-          document.execCommand('copy'); document.body.removeChild(ta);
-          showToast('📋', 'Link copied to clipboard');
-        }
-      });
-    }
 
     /* Track recently viewed on buy click */
     card.querySelector('.btn-buy').addEventListener('click', () => {
@@ -1188,76 +1153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ================================================================
-     PRICE DROP ALERT MODAL
-  ================================================================ */
-  // Attached to window so inline onclick could work, but we use event listener in buildCard
-  window.openAlertModal = function(productTitle) {
-    const modal = document.getElementById('alert-modal');
-    const nameEl = document.getElementById('alert-product-name');
-    if (!modal || !nameEl) return;
-    nameEl.textContent = productTitle;
-    modal.classList.add('visible');
-    modal.setAttribute('aria-hidden', 'false');
-  };
-
-  function setupAlertModal() {
-    const modal = document.getElementById('alert-modal');
-    const closeBtn = document.getElementById('alert-close');
-    const form = document.getElementById('alert-form');
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        modal.classList.remove('visible');
-        modal.setAttribute('aria-hidden', 'true');
-      });
-    }
-
-    if (modal) {
-      modal.addEventListener('click', (e) => {
-        if (e.target.id === 'alert-modal') {
-          modal.classList.remove('visible');
-          modal.setAttribute('aria-hidden', 'true');
-        }
-      });
-    }
-
-    if (form) {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const priceInput = document.getElementById('alert-target-price');
-        const contactInput = document.getElementById('alert-contact');
-        const targetPrice = safeNumber(priceInput?.value, 0);
-        const contact = safeText(contactInput?.value).trim();
-        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
-        const validTelegram = /^@?[a-zA-Z0-9_]{5,32}$/.test(contact);
-
-        if (!targetPrice || targetPrice < 1) {
-          showToast('⚠️', 'Enter a valid target price');
-          return;
-        }
-        if (!validEmail && !validTelegram) {
-          showToast('⚠️', 'Enter a valid email or Telegram username');
-          return;
-        }
-
-        const alerts = Array.isArray(safeStorage.get('dealgod-alerts', []))
-          ? safeStorage.get('dealgod-alerts', [])
-          : [];
-        alerts.push({
-          product: safeText(document.getElementById('alert-product-name')?.textContent, 'Product'),
-          targetPrice,
-          contact,
-          createdAt: Date.now()
-        });
-        safeStorage.set('dealgod-alerts', alerts);
-        showToast('✅', 'Alert set successfully! We will notify you.');
-        form.reset();
-        modal.classList.remove('visible');
-        modal.setAttribute('aria-hidden', 'true');
-      });
-    }
-  }
 
   /* ================================================================
      AI GIFT FINDER
@@ -1297,7 +1192,7 @@ document.addEventListener('DOMContentLoaded', () => {
           card.style.transitionDelay = '0ms';
           const footer = card.querySelector('.card-footer');
           if (footer) footer.style.justifyContent = 'center';
-          const checks = card.querySelectorAll('.compare-check, .btn-wishlist, .btn-share, .btn-alert');
+          const checks = card.querySelectorAll('.compare-check, .btn-wishlist, .btn-share');
           checks.forEach(c => c.style.display = 'none');
           resultsGrid.appendChild(card);
         });
@@ -1570,8 +1465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCountdowns, 1000);
     initCookieConsent();
     setupMegaSaleBanner();
-    setupAlertModal();
-    setupGiftFinder();
+      setupGiftFinder();
     if (SITE_CONFIG?.features?.enableFomoPopups) {
       setupFOMOPopups();
     }
