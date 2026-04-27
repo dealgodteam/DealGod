@@ -380,6 +380,52 @@ body::before {
   font-weight: 500;
 }
 
+/* Hero CTA Group */
+.hero-cta-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.8rem;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.7s ease 0.3s both;
+}
+
+.hero-deals-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff6b35, #e6a817);
+  color: #070810;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  text-decoration: none;
+  box-shadow: 0 8px 30px rgba(255, 107, 53, 0.35);
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: none;
+  cursor: pointer;
+}
+
+.hero-deals-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 40px rgba(255, 107, 53, 0.5);
+}
+
+.hero-deals-btn-arrow {
+  width: 18px;
+  height: 18px;
+  margin-left: 4px;
+  transition: transform 0.25s;
+}
+
+.hero-deals-btn:hover .hero-deals-btn-arrow {
+  transform: translateX(3px);
+}
+
 /* Hero Badges */
 .hero-badges {
   display: flex;
@@ -2442,6 +2488,8 @@ body.nav-open { overflow: hidden; }
   .hero-stat-value { font-size: 1.2rem; }
   .hero-badges { gap: 0.4rem; }
   .hero-badge { font-size: 0.65rem; padding: 5px 10px; }
+  .hero-cta-group { gap: 0.75rem; margin-top: 1.5rem; }
+  .hero-deals-btn { padding: 11px 20px; font-size: 0.9rem; }
 
   .product-grid { grid-template-columns: 1fr; gap: 1rem; }
   .card-image-wrap { padding-top: 55%; }
