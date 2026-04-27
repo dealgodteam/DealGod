@@ -1446,8 +1446,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/catalog.json', { cache: 'no-store' });
       if (!res.ok) return;
       const data = await res.json();
-      if (Array.isArray(data?.products)) PRODUCTS = data.products;
-      if (Array.isArray(data?.categories)) CATEGORIES = data.categories;
+      if (Array.isArray(data?.products) && data.products.length > 0) PRODUCTS = data.products;
+      if (Array.isArray(data?.categories) && data.categories.length > 0) CATEGORIES = data.categories;
     } catch {
       // ignore - keep fallback globals from data.js
     }
