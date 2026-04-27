@@ -268,32 +268,39 @@ document.addEventListener('DOMContentLoaded', () => {
      RENDER PRODUCTS
   ================================================================ */
   function renderProducts() {
-    const filtered = getFilteredSorted();
+    try {
+      const filtered = getFilteredSorted();
 
-    grid.innerHTML = '';
+      grid.innerHTML = '';
 
-    if (filtered.length === 0) {
+      if (filtered.length === 0) {
+        emptyState.classList.add('visible');
+        grid.style.display = 'none';
+        countEl.innerHTML = 'Showing <strong>0</strong> products';
+        return;
+      }
+
+      emptyState.classList.remove('visible');
+      grid.style.display = '';
+      countEl.innerHTML = `Showing <strong>${filtered.length}</strong> product${filtered.length !== 1 ? 's' : ''}`;
+
+      filtered.forEach(product => {
+        const card = buildCard(product);
+        grid.appendChild(card);
+      });
+
+      // Intersection Observer for staggered entrance
+      observeCards();
+
+      // Call search fallback logic
+      if (typeof window.handleSearchFallback === 'function') {
+        window.handleSearchFallback(filtered.length);
+      }
+    } catch (err) {
+      console.error('renderProducts failed:', err);
+      countEl.innerHTML = 'Showing <strong>0</strong> products';
       emptyState.classList.add('visible');
       grid.style.display = 'none';
-      countEl.innerHTML = 'Showing <strong>0</strong> products';
-      return;
-    }
-
-    emptyState.classList.remove('visible');
-    grid.style.display = '';
-    countEl.innerHTML = `Showing <strong>${filtered.length}</strong> product${filtered.length !== 1 ? 's' : ''}`;
-
-    filtered.forEach(product => {
-      const card = buildCard(product);
-      grid.appendChild(card);
-    });
-
-    // Intersection Observer for staggered entrance
-    observeCards();
-
-    // Call search fallback logic
-    if (typeof window.handleSearchFallback === 'function') {
-      window.handleSearchFallback(filtered.length);
     }
   }
 
@@ -377,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
           data-src="${escapeHtml(product.image)}"
           alt="${escapeHtml(safeTitle)}"
           loading="lazy"
+          decoding="async"
           referrerpolicy="no-referrer"
         />
         ${badgeHtml}
@@ -420,8 +428,18 @@ document.addEventListener('DOMContentLoaded', () => {
           class="btn-share"
           aria-label="Share deal"
           data-product-id="${product.id}"
-          title="Share this deal"
-        >📤</button>
+        >
+          <span class="btn-share-icon">🔗</span>
+          Share
+        </button>
+        <button
+          class="btn-copy"
+          aria-label="Copy product link"
+          data-copy-link="${affLink}"
+        >
+          <span class="btn-copy-icon">�</span>
+          Copy Link
+        </button>
         <button
           class="compare-check ${compareList.includes(product.id) ? 'checked' : ''}"
           data-product-id="${product.id}"
@@ -480,6 +498,25 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       toggleCompare(product.id);
     });
+
+    /* Copy link button */
+    const copyBtn = card.querySelector('[data-copy-link]');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const link = copyBtn.getAttribute('data-copy-link');
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(link).then(() => showToast('📋', 'Link copied to clipboard'));
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = link; ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+          showToast('📋', 'Link copied to clipboard');
+        }
+      });
+    }
 
     /* Track recently viewed on buy click */
     card.querySelector('.btn-buy').addEventListener('click', () => {
@@ -707,7 +744,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.rel = 'noopener noreferrer sponsored';
       card.innerHTML = `
         <div class="recent-img-wrap">
-          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/80x80/1e1e2a/555575?text=No+Image';" />
+          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/80x80/1e1e2a/555575?text=No+Image';" />
         </div>
         <p class="recent-title">${escapeHtml(product.title.slice(0, 35))}${product.title.length > 35 ? '…' : ''}</p>
         <span class="recent-price">${escapeHtml(product.price)}</span>
@@ -808,6 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.classList.add('active');
       chip.setAttribute('aria-pressed', 'true');
       activeCategory = chip.dataset.category;
+      localStorage.setItem('dg_filter_category', activeCategory);
       renderProducts();
     });
   });
@@ -824,6 +862,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.classList.add('active');
       chip.setAttribute('aria-pressed', 'true');
       activePriceRange = chip.dataset.range;
+      localStorage.setItem('dg_filter_price', activePriceRange);
       renderProducts();
     });
   });
@@ -833,6 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ================================================================ */
   sortSelect.addEventListener('change', () => {
     sortMode = sortSelect.value;
+    localStorage.setItem('dg_filter_sort', sortMode);
     renderProducts();
   });
 
@@ -1100,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', () => {
           card.target = '_blank';
           card.innerHTML = `
             <div class="recent-img-wrap">
-              <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/80x80/1e1e2a/555575?text=No+Image';" />
+              <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/80x80/1e1e2a/555575?text=No+Image';" />
             </div>
             <p class="recent-title">${escapeHtml(p.title.slice(0, 35))}...</p>
             <span class="recent-price">${escapeHtml(p.price)}</span>
@@ -1349,7 +1389,11 @@ document.addEventListener('DOMContentLoaded', () => {
       clearTimeout(searchTimer);
       searchTimer = setTimeout(function() {
         var q = e.target.value.toLowerCase().trim();
-        if (!q) { sd.style.display = 'none'; return; }
+        if (!q) { sd.style.display = 'none'; renderProducts(); return; }
+
+        // Live filter the product grid too
+        currentSearchQuery = q;
+        renderProducts();
 
         var matches = PRODUCTS.filter(function(p) {
           return p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
@@ -1496,6 +1540,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     injectAnalytics();
+
+    // Restore saved filters from localStorage
+    try {
+      const savedCat = localStorage.getItem('dg_filter_category');
+      const savedPrice = localStorage.getItem('dg_filter_price');
+      const savedSort = localStorage.getItem('dg_filter_sort');
+      if (savedCat) {
+        activeCategory = savedCat;
+        filterChips.forEach(c => {
+          c.classList.toggle('active', c.dataset.category === savedCat);
+          c.setAttribute('aria-pressed', c.dataset.category === savedCat ? 'true' : 'false');
+        });
+      }
+      if (savedPrice) {
+        activePriceRange = savedPrice;
+        priceChips.forEach(c => {
+          c.classList.toggle('active', c.dataset.range === savedPrice);
+          c.setAttribute('aria-pressed', c.dataset.range === savedPrice ? 'true' : 'false');
+        });
+      }
+      if (savedSort && sortSelect) sortSelect.value = savedSort;
+    } catch (_) { /* ignore */ }
 
     renderProducts();
     updateCompareUI();

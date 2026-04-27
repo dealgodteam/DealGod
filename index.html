@@ -363,13 +363,23 @@
         </div>
       </div>
 
-      <div class="product-grid" id="product-grid" role="list" aria-label="Product catalog"></div>
+      <div class="product-grid" id="product-grid" role="list" aria-label="Product catalog">
+        <!-- Skeleton Loader (shown while products load) -->
+        <div id="skeleton-loader" class="skeleton-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
 
-      <!-- Empty state -->
-      <div class="empty-state" id="empty-state" role="status" aria-live="polite">
-        <div class="empty-icon" aria-hidden="true">🔍</div>
-        <h3>No Deals Found</h3>
-        <p>Try a different search term, adjust the price range, or browse another category.</p>
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state" role="status" aria-live="polite">
+          <div class="empty-icon" aria-hidden="true">🔍</div>
+          <h3>No Deals Found</h3>
+          <p>Try a different search term, adjust the price range, or browse another category.</p>
+        </div>
       </div>
     </div>
   </main>
@@ -499,7 +509,7 @@
       <button class="top-deals-popup-close" id="top-deals-popup-close">✕</button>
     </div>
     <div class="top-deals-popup-list" id="top-deals-popup-list"></div>
-    <a href="#products" class="top-deals-popup-cta" id="top-deals-browse-all">Browse All Deals →</a>
+    <a href="#products" class="top-deals-popup-cta" id="top-deals-browse-all">→</a>
   </div>
 
   <!-- Scripts -->
@@ -507,6 +517,27 @@
   <script src="script.js"></script>
   <script>
     document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Register Service Worker for offline caching
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function() { /* silent fail */ });
+    }
+
+    // Hide skeleton loader when products render
+    (function hideSkeleton() {
+      var grid = document.getElementById('product-grid');
+      var skel = document.getElementById('skeleton-loader');
+      if (!grid || !skel) return;
+      var obs = new MutationObserver(function() {
+        if (grid.children.length > 0) {
+          skel.style.display = 'none';
+          obs.disconnect();
+        }
+      });
+      obs.observe(grid, { childList: true });
+      // Fallback: hide after 5 seconds regardless
+      setTimeout(function() { skel.style.display = 'none'; }, 5000);
+    })();
   </script>
 </body>
 </html>
