@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SECURITY HEADERS -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' https://m.media-amazon.com https://placehold.co data:;
+    connect-src 'self' https://formspree.io;
+    frame-src 'none';
+    object-src 'none';
+    base-uri 'self';
+  " />
+
+  <!-- SEO Meta -->
+  <title>DealGod – The God of Amazon Deals in India</title>
+  <meta name="description" content="DealGod – India's ultimate Amazon deals destination. Handpicked electronics, home products, books, fashion, fitness and more with jaw-dropping discounts." />
+  <meta name="keywords" content="DealGod, Amazon deals India, best offers, affiliate, electronics, home kitchen, books, fashion, fitness, discounts, top deals" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="DealGod" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="DealGod – The God of Amazon Deals" />
+  <meta property="og:description" content="India's ultimate Amazon deals destination. Jaw-dropping discounts curated daily." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="logo.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "DealGod",
+    "url": "https://dealgod.netlify.app",
+    "description": "India's #1 Amazon deals platform. Handpicked electronics, home products, books, fashion with jaw-dropping discounts.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://dealgod.netlify.app/search.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- MEGA SALE BANNER -->
+  <div class="mega-sale-banner" id="mega-sale-banner" role="alert">
+    <div class="mega-sale-inner">
+      <span class="mega-sale-pulse"></span>
+      <p>☀️ <strong>GREAT SUMMER SALE COMING SOON:</strong> Prices drop early May! <a href="#products">Build Your Wishlist 🛒</a></p>
+      <button class="mega-sale-close" id="mega-sale-close" aria-label="Dismiss banner">✕</button>
+    </div>
+  </div>
+
+  <!-- SCROLL PROGRESS BAR -->
+  <div class="scroll-progress-container" aria-hidden="true">
+    <div class="scroll-progress" id="scroll-progress"></div>
+  </div>
+
+  <!-- ================================================================
+       NAVIGATION
+  ================================================================ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <!-- Brand -->
+      <a href="#" class="nav-brand" id="site-brand-link" aria-label="DealGod Home">
+        <div class="nav-logo-icon">
+          <img src="logo.png" alt="DealGod" class="nav-logo-img" />
+        </div>
+        <span class="nav-brand-name">DealGod</span>
+      </a>
+
+      <!-- Nav Links -->
+      <div class="nav-links" role="navigation" aria-label="Quick links">
+        <a href="#hero" class="nav-link">Home</a>
+        <a href="#products" class="nav-link">🔥 Deals</a>
+        <a href="blog.html" class="nav-link">📝 Blog</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+      </div>
+
+      <!-- Search -->
+      <div class="nav-search" role="search" style="position: relative;">
+        <form action="search.html" method="GET" id="global-search-form">
+          <span class="nav-search-icon" aria-hidden="true">🔍</span>
+          <input
+            type="search"
+            name="q"
+            id="search-input"
+            class="nav-search-input"
+            placeholder="Search deals… (press / to focus)"
+            aria-label="Search products"
+            autocomplete="off"
+            maxlength="100"
+          />
+        </form>
+        <div class="search-autocomplete-dropdown" id="search-autocomplete" style="display: none;"></div>
+      </div>
+
+
+      <!-- Amazon badge -->
+      <div class="nav-tag-badge" aria-label="Amazon Associates">
+        <span>🔗</span>
+        Amazon Associates
+      </div>
+      <!-- Shop Deals CTA -->
+      <a href="#products" class="nav-shop-btn" id="nav-shop-btn">🔥 Shop Deals</a>
+      <!-- Hamburger Menu -->
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+    <div class="mobile-nav-content">
+      <a href="#hero" class="mobile-nav-link">🏠 Home</a>
+      <a href="#products" class="mobile-nav-link">🔥 Deals</a>
+      <a href="blog.html" class="mobile-nav-link">📝 Blog</a>
+      <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
+      <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+      <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="mobile-nav-link mobile-nav-telegram">📱 Join Telegram</a>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       HERO
+  ================================================================ -->
+  <header class="hero" id="hero" role="banner">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow" aria-label="Platform label">
+        ⚡ India's #1 Amazon Deals Platform
+      </div>
+      <h1 class="hero-title">
+        The God of<br />
+        <span>Amazon Deals.</span>
+      </h1>
+      <div class="hero-mascot">
+        <img src="logo.png" alt="DealGod Zeus Mascot" class="hero-mascot-img" />
+      </div>
+      <p class="hero-subtitle">
+        120+ handpicked deals. Jaw-dropping discounts. Regularly updated.
+        Everything you need — nothing you don't.
+      </p>
+      <div class="hero-stats" role="list" aria-label="Platform statistics">
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-value" data-target="120" data-suffix="+" id="stat-products">0</span>
+          <span class="hero-stat-label">Products</span>
+        </div>
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-value" data-target="15" id="stat-categories">0</span>
+          <span class="hero-stat-label">Categories</span>
+        </div>
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-value" data-target="4.4" data-suffix="★" id="stat-rating">0</span>
+          <span class="hero-stat-label">Avg. Rating</span>
+        </div>
+        <div class="hero-stat" role="listitem">
+          <span class="hero-stat-value" data-target="46" data-suffix="%" id="stat-savings">0</span>
+          <span class="hero-stat-label">Avg. Savings</span>
+        </div>
+      </div>
+      <!-- Value Propositions -->
+      <div class="hero-badges" role="list" aria-label="Why DealGod">
+        <div class="hero-badge" role="listitem">✅ Verified Deals</div>
+        <div class="hero-badge" role="listitem">🔄 Regularly Updated</div>
+        <div class="hero-badge" role="listitem">💰 Up to 70% Off</div>
+        <div class="hero-badge" role="listitem">🚀 Prime Eligible</div>
+      </div>
+      <div class="hero-telegram">
+        <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="telegram-hero-btn">
+          <span>📱</span> Join Our Telegram Channel
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================
+       AI GIFT FINDER
+  ================================================================ -->
+  <section class="gift-finder-section" id="gift-finder" aria-label="AI Gift Finder">
+    <div class="gift-finder-inner">
+      <div class="gift-finder-header">
+        <h2>🎁 DealGod AI Gift Finder</h2>
+        <p>Not sure what to buy? Let our smart algorithm find the perfect deal.</p>
+      </div>
+      <form class="gift-finder-form" id="gift-finder-form">
+        <div class="gf-select-group">
+          <label for="gf-recipient">Who is it for?</label>
+          <select id="gf-recipient" required>
+            <option value="" disabled selected>Select recipient...</option>
+            <option value="partner">Partner / Spouse</option>
+            <option value="parents">Parents</option>
+            <option value="kids">Kids / Teens</option>
+            <option value="friend">Friend</option>
+            <option value="myself">Treat Myself</option>
+          </select>
+        </div>
+        <div class="gf-select-group">
+          <label for="gf-occasion">Occasion?</label>
+          <select id="gf-occasion" required>
+            <option value="" disabled selected>Select occasion...</option>
+            <option value="birthday">Birthday</option>
+            <option value="anniversary">Anniversary</option>
+            <option value="wedding">Wedding</option>
+            <option value="just-because">Just Because</option>
+          </select>
+        </div>
+        <div class="gf-select-group">
+          <label for="gf-budget">Budget?</label>
+          <select id="gf-budget" required>
+            <option value="" disabled selected>Select budget...</option>
+            <option value="under500">Under ₹500</option>
+            <option value="under2000">₹500 - ₹2,000</option>
+            <option value="under5000">₹2,000 - ₹5,000</option>
+            <option value="under10000">₹5,000 - ₹10,000</option>
+            <option value="premium">₹10,000+</option>
+          </select>
+        </div>
+        <button type="submit" class="gf-submit-btn">Find Gifts 🪄</button>
+      </form>
+      <div class="gf-results-wrap" id="gf-results-wrap" style="display:none;">
+        <h3>✨ Recommended for you:</h3>
+        <div class="gf-results-grid" id="gf-results-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       WHY DEALGOD
+  ================================================================ -->
+  <section class="why-section" id="why-section" aria-label="Why choose DealGod">
+    <div class="why-inner">
+      <h2 class="why-title">Why Shop With <span>DealGod</span>?</h2>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🎯</div>
+          <h3>Handpicked Deals</h3>
+          <p>Every product is manually curated — no junk, no spam, only the best discounts from Amazon India.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">💸</div>
+          <h3>Maximum Savings</h3>
+          <p>We find deals with 30-70% off MRP so you never pay full price again.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">⭐</div>
+          <h3>Top Rated Only</h3>
+          <p>All products have 4+ star ratings with thousands of verified buyer reviews.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🛡️</div>
+          <h3>100% Trusted</h3>
+          <p>Buy directly from Amazon India. Full warranty, easy returns, Prime delivery available.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       CATEGORY FILTER
+  ================================================================ -->
+  <section class="filter-section" aria-label="Category filters">
+    <div class="filter-inner">
+      <span class="filter-label" id="filter-label">Browse:</span>
+      <div class="filter-chips" role="group" aria-labelledby="filter-label">
+        <button class="filter-chip active" data-category="All"              id="cat-all"        aria-pressed="true" >🏠 All</button>
+        <button class="filter-chip"        data-category="Electronics"      id="cat-electronics" aria-pressed="false">⚡ Electronics</button>
+        <button class="filter-chip"        data-category="Home & Kitchen"   id="cat-home"        aria-pressed="false">🍳 Home &amp; Kitchen</button>
+        <button class="filter-chip"        data-category="Books"            id="cat-books"       aria-pressed="false">📚 Books</button>
+        <button class="filter-chip"        data-category="Fashion"          id="cat-fashion"     aria-pressed="false">👗 Fashion</button>
+        <button class="filter-chip"        data-category="Health & Beauty"  id="cat-health"      aria-pressed="false">💄 Health &amp; Beauty</button>
+        <button class="filter-chip"        data-category="Sports & Fitness" id="cat-sports"      aria-pressed="false">🏋️ Sports &amp; Fitness</button>
+        <button class="filter-chip"        data-category="Gaming"           id="cat-gaming"      aria-pressed="false">🎮 Gaming</button>
+        <button class="filter-chip"        data-category="Smart Home"       id="cat-smarthome"   aria-pressed="false">💡 Smart Home</button>
+        <button class="filter-chip"        data-category="Toys & Games"     id="cat-toys"        aria-pressed="false">🧸 Toys &amp; Games</button>
+        <button class="filter-chip"        data-category="Office & Stationery" id="cat-office"   aria-pressed="false">🖇️ Office &amp; Stationery</button>
+        <button class="filter-chip"        data-category="Appliances"       id="cat-appliances"  aria-pressed="false">🔌 Appliances</button>
+        <button class="filter-chip"        data-category="Automotive"       id="cat-auto"        aria-pressed="false">🚗 Automotive</button>
+        <button class="filter-chip"        data-category="Baby & Kids"      id="cat-baby"        aria-pressed="false">👶 Baby &amp; Kids</button>
+        <button class="filter-chip"        data-category="Musical Instruments" id="cat-music"    aria-pressed="false">🎸 Musical Instruments</button>
+      </div>
+    </div>
+    <!-- Price Range Filter -->
+    <div class="filter-inner" style="margin-top: 0.8rem;">
+      <span class="filter-label" id="price-label">Price:</span>
+      <div class="filter-chips" role="group" aria-labelledby="price-label">
+        <button class="price-chip active" data-range="all"        aria-pressed="true" >All Prices</button>
+        <button class="price-chip"        data-range="under500"   aria-pressed="false">Under ₹500</button>
+        <button class="price-chip"        data-range="500-2000"   aria-pressed="false">₹500 – ₹2K</button>
+        <button class="price-chip"        data-range="2000-5000"  aria-pressed="false">₹2K – ₹5K</button>
+        <button class="price-chip"        data-range="5000-10000" aria-pressed="false">₹5K – ₹10K</button>
+        <button class="price-chip"        data-range="10000+"     aria-pressed="false">₹10,000+</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       RECENTLY VIEWED
+  ================================================================ -->
+  <section class="recently-viewed-section" id="recently-viewed" aria-label="Recently viewed products" style="display:none;">
+    <div class="recently-viewed-inner">
+      <h3 class="recently-viewed-title">👁️ Recently Viewed</h3>
+      <div class="recent-scroller" id="recent-scroller"></div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PRODUCT GRID
+  ================================================================ -->
+  <main class="products-section" id="products" role="main">
+    <div class="products-inner">
+      <!-- Section Header -->
+      <div class="deals-section-header">
+        <h2 class="deals-title">🔥 Today's Top Deals</h2>
+        <p class="deals-subtitle">Handpicked discounts on the best Amazon products — regularly updated</p>
+      </div>
+      <div class="products-header">
+        <p class="products-count" id="products-count" aria-live="polite">
+          Showing <strong>0</strong> products
+        </p>
+        <div class="sort-controls">
+          <label for="sort-select" class="sort-label">Sort by:</label>
+          <select id="sort-select" class="sort-select" aria-label="Sort products">
+            <option value="default">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="discount">Biggest Discount</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="product-grid" id="product-grid" role="list" aria-label="Product catalog"></div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="empty-state" role="status" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">🔍</div>
+        <h3>No Deals Found</h3>
+        <p>Try a different search term, adjust the price range, or browse another category.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================================================================
+       NEWSLETTER SIGNUP
+  ================================================================ -->
+  <section class="newsletter-section" id="newsletter" aria-label="Newsletter signup">
+    <div class="newsletter-inner">
+      <div class="newsletter-content">
+        <h2 class="newsletter-title">📬 Never Miss a Deal</h2>
+        <p class="newsletter-desc">Get the hottest Amazon deals delivered straight to your inbox. No spam, just savings.</p>
+      </div>
+      <form class="newsletter-form" id="newsletter-form" action="#" method="POST">
+        <div class="newsletter-input-wrap">
+          <input
+            type="email"
+            id="newsletter-email"
+            class="newsletter-input"
+            placeholder="Enter your email address"
+            aria-label="Email for newsletter"
+            required
+            maxlength="100"
+          />
+          <button type="submit" class="newsletter-btn" id="newsletter-btn">
+            Subscribe ⚡
+          </button>
+        </div>
+        <p class="newsletter-note">🔒 We respect your privacy. Unsubscribe anytime.</p>
+      </form>
+      <p class="newsletter-unsub" id="newsletter-unsub" style="display:none; text-align:center; margin-top:12px;">
+        <span style="color:var(--text-muted); font-size:0.85rem;">Want to unsubscribe?</span>
+        <button id="unsub-btn" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-weight:600; font-size:0.85rem; text-decoration:underline; margin-left:4px;">Click here</button>
+      </p>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       AFFILIATE DISCLOSURE
+  ================================================================ -->
+  <div class="disclosure-banner" role="complementary" aria-label="Affiliate disclosure">
+    <p>
+      <strong>⚡ Affiliate Disclosure:</strong>
+      DealGod is a participant in the
+      <a href="https://affiliate-program.amazon.in/" target="_blank" rel="noopener noreferrer">Amazon Associates Programme</a>.
+      As an Amazon Associate, we earn from qualifying purchases at no additional cost to you.
+      Prices shown are approximate and subject to change on Amazon.in.
+    </p>
+  </div>
+
+  <!-- ================================================================
+       FOOTER
+  ================================================================ -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="footer-brand-name">
+          <img src="logo.png" alt="DealGod" class="footer-logo-img" />
+          DealGod
+        </div>
+        <p class="footer-tagline">The God of Amazon Deals.</p>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#hero">Home</a>
+          <a href="#products">Deals</a>
+          <a href="blog.html">Blog</a>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html">Privacy Policy</a>
+        </nav>
+        <div class="footer-social">
+          <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="social-link telegram" aria-label="Telegram">📱 Telegram</a>
+        </div>
+      </div>
+      <div class="footer-right">
+        <p class="footer-copy">
+          &copy; <span id="footer-year"></span> DealGod. All rights reserved.
+        </p>
+        <div class="footer-amazon-badge">
+          🔗 Amazon Associates Partner
+        </div>
+        <p class="footer-security">🔒 Secured & Protected</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================================================================
+       COOKIE CONSENT BANNER
+  ================================================================ -->
+  <div class="cookie-banner" id="cookie-banner" role="alert" aria-label="Cookie consent">
+    <div class="cookie-inner">
+      <p>🍪 We use localStorage to save your wishlist and preferences. No tracking cookies are used. By continuing, you agree to our <a href="privacy.html">Privacy Policy</a>.</p>
+      <button id="cookie-accept" class="cookie-accept-btn">Got it!</button>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       COMPARISON MODAL
+  ================================================================ -->
+  <div class="compare-modal-overlay" id="compare-modal" aria-hidden="true">
+    <div class="compare-modal">
+      <div class="compare-header">
+        <h2>🔄 Product Comparison</h2>
+        <button class="compare-close" id="compare-close" aria-label="Close comparison">✕</button>
+      </div>
+      <div class="compare-body" id="compare-body"></div>
+      <div class="compare-related" id="compare-related" style="display:none;">
+        <h3>💡 Related Deals You Might Like</h3>
+        <div class="related-scroller" id="related-scroller"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       PRICE DROP ALERT MODAL
+  ================================================================ -->
+  <div class="alert-modal-overlay" id="alert-modal" aria-hidden="true">
+    <div class="alert-modal">
+      <div class="alert-header">
+        <h2>🔔 Set Price Drop Alert</h2>
+        <button class="alert-close" id="alert-close" aria-label="Close alert modal">✕</button>
+      </div>
+      <div class="alert-body">
+        <p>We'll notify you when <strong id="alert-product-name">this product</strong> drops below your target price.</p>
+        <form id="alert-form" class="alert-form">
+          <div class="alert-input-group">
+            <label for="alert-target-price">Target Price (₹)</label>
+            <input type="number" id="alert-target-price" required placeholder="e.g. 1500" />
+          </div>
+          <div class="alert-input-group">
+            <label for="alert-contact">Email or Telegram Handle</label>
+            <input type="text" id="alert-contact" required placeholder="@username or email" />
+          </div>
+          <button type="submit" class="alert-submit-btn">Set Alert 🚀</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating UI -->
+  <button id="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Floating Compare Button -->
+  <button class="compare-float-btn" id="compare-float-btn" style="display:none;" aria-label="Compare selected products">
+    🔄 Compare (<span id="compare-count">0</span>)
+  </button>
+
+  <!-- Floating Telegram Button -->
+  <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="telegram-float" aria-label="Join Telegram">
+    📱
+  </a>
+
+  <!-- Top 5 Deals Float Button -->
+  <button class="top-deals-float-btn" id="top-deals-float-btn" aria-label="Top 5 Deals">🔥</button>
+
+  <!-- Top 5 Deals Popup -->
+  <div class="top-deals-popup" id="top-deals-popup" style="display: none;">
+    <div class="top-deals-popup-header">
+      <h3>🔥 Top 5 Deals</h3>
+      <button class="top-deals-popup-close" id="top-deals-popup-close">✕</button>
+    </div>
+    <div class="top-deals-popup-list" id="top-deals-popup-list"></div>
+    <a href="#products" class="top-deals-popup-cta" id="top-deals-browse-all">Browse All Deals →</a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
