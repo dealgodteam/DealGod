@@ -1123,61 +1123,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('compare-float-btn')?.addEventListener('click', openCompareModal);
 
   /* ================================================================
-     NEWSLETTER SIGNUP
-  ================================================================ */
-  function initNewsletter() {
-    const form = document.getElementById('newsletter-form');
-    const unsubWrap = document.getElementById('newsletter-unsub');
-    const unsubBtn = document.getElementById('unsub-btn');
-    if (!form) return;
-
-    // Check if already subscribed
-    var subbed = safeStorage.get('dealgod-newsletter-email', null);
-    if (subbed && unsubWrap) {
-      unsubWrap.style.display = 'block';
-    }
-
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      var emailInput = document.getElementById('newsletter-email');
-      var email = emailInput.value.trim();
-
-      // Validate email
-      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showToast('⚠️', 'Please enter a valid email address');
-        return;
-      }
-
-      // Save email and show success
-      safeStorage.set('dealgod-newsletter-email', email);
-      showToast('🎉', 'Thanks for subscribing! You\'ll hear from us soon.');
-      emailInput.value = '';
-
-      // Show unsubscribe option
-      if (unsubWrap) unsubWrap.style.display = 'block';
-
-      // Disable button temporarily
-      var btn = document.getElementById('newsletter-btn');
-      btn.textContent = 'Subscribed ✅';
-      btn.disabled = true;
-      setTimeout(function() {
-        btn.textContent = 'Subscribe ⚡';
-        btn.disabled = false;
-      }, 3000);
-    });
-
-    // Unsubscribe handler
-    if (unsubBtn) {
-      unsubBtn.addEventListener('click', function() {
-        safeStorage.set('dealgod-newsletter-email', null);
-        if (unsubWrap) unsubWrap.style.display = 'none';
-        showToast('📭', 'You have been unsubscribed successfully.');
-      });
-    }
-  }
-
-  /* ================================================================
      MEGA SALE BANNER
   ================================================================ */
   function setupMegaSaleBanner() {
@@ -1491,7 +1436,6 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCountdowns();
   setInterval(updateCountdowns, 1000);
   initCookieConsent();
-  initNewsletter();
   setupMegaSaleBanner();
   setupAlertModal();
   setupGiftFinder();
