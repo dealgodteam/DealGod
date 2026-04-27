@@ -3,32 +3,167 @@ name: Telegram deploy notify
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "catalog.json"
+      - "data.js"
 
 jobs:
   notify:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
-      - name: Send message to Telegram
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Send changed products to Telegram
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
-            echo "Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID secrets; skipping."
-            exit 0
-          fi
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import urllib.parse
+          import urllib.request
 
-          REPO="${{ github.repository }}"
-          BRANCH="${{ github.ref_name }}"
-          SHA="${{ github.sha }}"
-          SHORT_SHA="$(echo "$SHA" | cut -c1-7)"
-          URL="https://dealgod.netlify.app"
-          COMMIT_URL="https://github.com/${REPO}/commit/${SHA}"
+          token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+          chat_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+          repo = os.getenv("REPO", "").strip()
+          sha = os.getenv("SHA", "").strip()
+          branch = os.getenv("REF_NAME", "").strip()
 
-          TEXT="✅ DealGod updated\n\nRepo: ${REPO}\nBranch: ${BRANCH}\nCommit: ${SHORT_SHA}\n${COMMIT_URL}\n\nLive: ${URL}"
+          if not token or not chat_id:
+            print("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID; skipping.")
+            raise SystemExit(0)
 
-          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            -d "chat_id=${TELEGRAM_CHAT_ID}" \
-            --data-urlencode "text=${TEXT}" \
-            -d "disable_web_page_preview=true" >/dev/null
+          def tg_post(method: str, data: dict):
+            url = f"https://api.telegram.org/bot{token}/{method}"
+            encoded = urllib.parse.urlencode(data).encode("utf-8")
+            req = urllib.request.Request(url, data=encoded, method="POST")
+            with urllib.request.urlopen(req, timeout=20) as resp:
+              return resp.read().decode("utf-8", errors="ignore")
+
+          def load_json_file(path: str):
+            try:
+              with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+            except Exception:
+              return {}
+
+          def load_prev_catalog():
+            try:
+              out = subprocess.check_output(
+                ["git", "show", "HEAD^:catalog.json"],
+                stderr=subprocess.DEVNULL,
+                text=True,
+              )
+              return json.loads(out)
+            except Exception:
+              return {}
+
+          def by_id(products):
+            d = {}
+            for p in products:
+              pid = str(p.get("id", ""))
+              if pid:
+                d[pid] = p
+            return d
+
+          def parse_affiliate_tag():
+            try:
+              with open("data.js", "r", encoding="utf-8") as f:
+                text = f.read()
+              m = re.search(r'affiliateTag:\s*"([^"]+)"', text)
+              if m:
+                return m.group(1).strip()
+            except Exception:
+              pass
+            return "YOUR-TAG-20"
+
+          def product_link(asin: str, tag: str):
+            if not asin:
+              return "https://dealgod.netlify.app"
+            return f"https://www.amazon.in/dp/{asin}?tag={tag}"
+
+          prev_catalog = load_prev_catalog()
+          cur_catalog = load_json_file("catalog.json")
+          prev_products = by_id(prev_catalog.get("products", []))
+          cur_products = by_id(cur_catalog.get("products", []))
+
+          added = []
+          updated = []
+          for pid, p in cur_products.items():
+            old = prev_products.get(pid)
+            if old is None:
+              added.append(p)
+            elif json.dumps(old, sort_keys=True, ensure_ascii=False) != json.dumps(p, sort_keys=True, ensure_ascii=False):
+              updated.append(p)
+
+          changed = [("NEW", p) for p in added] + [("UPDATED", p) for p in updated]
+          if not changed:
+            print("No product-level changes found in catalog.json")
+            raise SystemExit(0)
+
+          tag = parse_affiliate_tag()
+          short_sha = sha[:7] if sha else "unknown"
+          commit_url = f"https://github.com/{repo}/commit/{sha}" if repo and sha else "https://dealgod.netlify.app"
+          header = (
+            f"🛍 DealGod product updates\\n"
+            f"Branch: {branch}\\n"
+            f"Commit: {short_sha}\\n"
+            f"{commit_url}"
+          )
+          tg_post("sendMessage", {
+            "chat_id": chat_id,
+            "text": header,
+            "disable_web_page_preview": "true",
+          })
+
+          # Prevent channel spam on very large bulk updates
+          max_items = 15
+          for status, p in changed[:max_items]:
+            title = str(p.get("title", "Untitled deal")).strip()
+            price = str(p.get("price", "")).strip()
+            discount = str(p.get("discount", "")).strip()
+            category = str(p.get("category", "")).strip()
+            image = str(p.get("image", "")).strip()
+            asin = str(p.get("asin", "")).strip()
+            link = product_link(asin, tag)
+            caption = (
+              f"{'🆕' if status == 'NEW' else '♻️'} {status}: {title}\\n"
+              f"Category: {category or '-'}\\n"
+              f"Price: {price or '-'} | Off: {discount or '-'}\\n"
+              f"Buy: {link}"
+            )
+
+            if image.startswith("http://") or image.startswith("https://"):
+              tg_post("sendPhoto", {
+                "chat_id": chat_id,
+                "photo": image,
+                "caption": caption,
+              })
+            else:
+              tg_post("sendMessage", {
+                "chat_id": chat_id,
+                "text": caption,
+                "disable_web_page_preview": "false",
+              })
+
+          if len(changed) > max_items:
+            tg_post("sendMessage", {
+              "chat_id": chat_id,
+              "text": f"...and {len(changed) - max_items} more product updates in this commit.",
+              "disable_web_page_preview": "true",
+            })
+
+          print(f"Sent {min(len(changed), max_items)} product updates to Telegram.")
+          PY
 
