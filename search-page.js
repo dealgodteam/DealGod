@@ -24,7 +24,7 @@
     if (searchInput) searchInput.value = rawQuery;
 
     // Helpers
-    var tag = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.affiliateTag) ? SITE_CONFIG.affiliateTag : 'YOUR-TAG-20';
+    var tag = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.affiliateTag) ? SITE_CONFIG.affiliateTag : 'dealgodteam-21';
     function isValidAffiliateTag(rawTag) {
       var t = String(rawTag || '').trim();
       if (!t) return false;
@@ -83,7 +83,7 @@
 
       card.innerHTML =
         '<div class="card-image-wrap">' +
-          '<img class="card-image" data-src="' + escapeHtml(p.image) + '" alt="' + escapeHtml(p.title) + '" loading="lazy" />' +
+          '<img class="card-image" data-src="' + escapeHtml(p.image) + '" alt="' + escapeHtml(p.title) + '" loading="lazy" referrerpolicy="no-referrer" />' +
           badgeHtml +
           '<span class="card-discount">-' + escapeHtml(p.discount) + '</span>' +
         '</div>' +
@@ -114,12 +114,13 @@
       if (img) {
         var realSrc = img.getAttribute('data-src');
         var newImg = new Image();
+        newImg.referrerPolicy = 'no-referrer';
         newImg.onload = function() {
           img.src = realSrc;
           img.classList.add('loaded');
         };
         newImg.onerror = function() {
-          img.src = 'https://m.media-amazon.com/images/I/31%2BDgxGbxBL._AC_SL1000_.jpg';
+          img.src = 'https://placehold.co/400x260/1e1e2a/555575?text=' + encodeURIComponent(String(p.title || 'Product').slice(0, 20));
           img.classList.add('loaded');
         };
         newImg.src = realSrc;

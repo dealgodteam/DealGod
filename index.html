@@ -57,6 +57,15 @@
   </script>
 </head>
 <body>
+  <!-- Netlify Identity: redirect invite/confirm/recovery tokens to admin page -->
+  <script>
+    (function() {
+      var h = window.location.hash;
+      if (h && /token=/.test(h)) {
+        window.location.href = '/admin/' + h;
+      }
+    })();
+  </script>
 
   <!-- MEGA SALE BANNER -->
   <div class="mega-sale-banner" id="mega-sale-banner" role="alert">
@@ -475,7 +484,7 @@
   </a>
 
   <!-- Top 5 Deals Float Button -->
-  <button class="top-deals-float-btn" id="top-deals-float-btn" aria-label="Top 5 Deals">🔥</button>
+  <button class="top-deals-float-btn" id="top-deals-float-btn" aria-label="Top 5 Deals"><span class="top-deals-float-icon">🔥</span><span class="top-deals-float-text">Top 5</span></button>
 
   <!-- Top 5 Deals Popup -->
   <div class="top-deals-popup" id="top-deals-popup" style="display: none;">

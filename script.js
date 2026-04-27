@@ -377,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
           data-src="${escapeHtml(product.image)}"
           alt="${escapeHtml(safeTitle)}"
           loading="lazy"
+          referrerpolicy="no-referrer"
         />
         ${badgeHtml}
         <span class="card-discount">-${escapeHtml(product.discount)}</span>
@@ -448,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const realSrc = img.dataset.src;
 
     const tempImg = new Image();
+    tempImg.referrerPolicy = 'no-referrer';
     tempImg.onload = () => {
       img.src = realSrc;
       img.classList.add('loaded');
@@ -705,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.rel = 'noopener noreferrer sponsored';
       card.innerHTML = `
         <div class="recent-img-wrap">
-          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" loading="lazy" />
+          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/80x80/1e1e2a/555575?text=No+Image';" />
         </div>
         <p class="recent-title">${escapeHtml(product.title.slice(0, 35))}${product.title.length > 35 ? '…' : ''}</p>
         <span class="recent-price">${escapeHtml(product.price)}</span>
@@ -1045,7 +1047,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="compare-grid" style="grid-template-columns: repeat(${products.length}, 1fr);">
         ${products.map((p, i) => `
           <div class="compare-col">
-            <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" class="compare-img" />
+            <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" class="compare-img" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/120x120/1e1e2a/555575?text=No+Image';" />
             <h3 class="compare-name">${escapeHtml(p.title)}</h3>
             <div class="compare-row">
               <span class="compare-label">Price</span>
@@ -1098,7 +1100,7 @@ document.addEventListener('DOMContentLoaded', () => {
           card.target = '_blank';
           card.innerHTML = `
             <div class="recent-img-wrap">
-              <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" />
+              <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/80x80/1e1e2a/555575?text=No+Image';" />
             </div>
             <p class="recent-title">${escapeHtml(p.title.slice(0, 35))}...</p>
             <span class="recent-price">${escapeHtml(p.price)}</span>
@@ -1313,7 +1315,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var title = safeText(p.title).length > 35 ? safeText(p.title).slice(0, 35) + '...' : safeText(p.title);
       return '<a href="' + escapeHtml(link) + '" target="_blank" rel="noopener noreferrer sponsored" class="popup-deal-item">' +
         '<span class="popup-deal-rank">#' + (i + 1) + '</span>' +
-        '<img src="' + escapeHtml(image) + '" alt="" class="popup-deal-img" />' +
+        '<img src="' + escapeHtml(image) + '" alt="" class="popup-deal-img" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\'https://placehold.co/80x80/1e1e2a/555575?text=Deal\';" />' +
         '<div class="popup-deal-info">' +
           '<div class="popup-deal-title">' + escapeHtml(title) + '</div>' +
           '<div class="popup-deal-price">' + escapeHtml(safeText(p.price)) + ' <span class="popup-deal-discount">-' + escapeHtml(safeText(p.discount)) + '</span></div>' +
@@ -1358,7 +1360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           sd.innerHTML = matches.map(function(p) {
             return '<a href="' + buildAffLink(p.asin) + '" target="_blank" rel="noopener noreferrer sponsored" class="autocomplete-item">' +
-              '<img src="' + escapeHtml(p.image) + '" alt="" width="36" height="36" style="object-fit:contain; border-radius:6px; background:#fff; padding:2px;" />' +
+              '<img src="' + escapeHtml(p.image) + '" alt="" width="36" height="36" style="object-fit:contain; border-radius:6px; background:#fff; padding:2px;" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\'https://placehold.co/36x36/1e1e2a/555575?text=D\';" />' +
               '<div style="flex:1; min-width:0;">' +
                 '<div style="font-size:0.85rem; font-weight:600; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + escapeHtml(p.title.slice(0, 40)) + '</div>' +
                 '<div style="font-size:0.78rem; color:var(--accent-green); font-weight:600;">' + escapeHtml(p.price) + ' <span style="text-decoration:line-through; color:var(--text-muted); font-size:0.7rem;">' + escapeHtml(p.originalPrice) + '</span></div>' +
@@ -1405,19 +1407,34 @@ document.addEventListener('DOMContentLoaded', () => {
     var overlay = document.getElementById('mobile-nav-overlay');
     if (!hamburger || !overlay) return;
 
-    hamburger.addEventListener('click', function() {
-      hamburger.classList.toggle('active');
-      overlay.classList.toggle('open');
-      document.body.classList.toggle('nav-open');
+    function closeMenu() {
+      hamburger.classList.remove('active');
+      overlay.classList.remove('open');
+      document.body.classList.remove('nav-open');
+    }
+    function openMenu() {
+      hamburger.classList.add('active');
+      overlay.classList.add('open');
+      document.body.classList.add('nav-open');
+    }
+
+    hamburger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      overlay.classList.contains('open') ? closeMenu() : openMenu();
     });
 
-    var mobileLinks = overlay.querySelectorAll('.mobile-nav-link');
-    mobileLinks.forEach(function(link) {
-      link.addEventListener('click', function() {
-        hamburger.classList.remove('active');
-        overlay.classList.remove('open');
-        document.body.classList.remove('nav-open');
-      });
+    overlay.querySelectorAll('.mobile-nav-link').forEach(function(link) {
+      link.addEventListener('click', function() { closeMenu(); });
+    });
+
+    document.addEventListener('click', function(e) {
+      if (overlay.classList.contains('open') && !e.target.closest('.mobile-nav-overlay') && !e.target.closest('.nav-hamburger')) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeMenu();
     });
   }
 

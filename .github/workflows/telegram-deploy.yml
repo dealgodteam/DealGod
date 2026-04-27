@@ -86,7 +86,7 @@ jobs:
                 return m.group(1).strip()
             except Exception:
               pass
-            return "YOUR-TAG-20"
+            return "dealgodteam-21"
 
           def product_link(asin: str, tag: str):
             if not asin:

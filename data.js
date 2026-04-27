@@ -7,7 +7,7 @@
 const SITE_CONFIG = {
   siteName: "DealGod",
   tagline: "The God of Amazon Deals.",
-  affiliateTag: "YOUR-TAG-20", // <-- Replace with your Amazon Associate tag
+  affiliateTag: "dealgodteam-21", // <-- Replace with your Amazon Associate tag
   siteUrl: "https://dealgod.netlify.app",
   launchMode: "production",
   features: {
@@ -46,6 +46,7 @@ const CATEGORIES = [
 ];
 
 const PRODUCTS = [
+  // NOTE: window exposure happens at end of file
   // ---- ELECTRONICS ----
   {
     id: 1,
@@ -907,3 +908,10 @@ const PRODUCTS = [
   { id:119, title:"Cadbury Celebrations Premium Assorted Pack 286g", description:"Premium gift box with assorted chocolates for all occasions.", price:"₹249", originalPrice:"₹400", discount:"38%", category:"Home & Kitchen", rating:4.4, reviews:18000, image:"https://m.media-amazon.com/images/I/71xmUz0UEYL._AC_SL1500_.jpg", asin:"B00VG4X5US", badge:"Gift Pick" },
   { id:120, title:"JBL Go 3 Portable Bluetooth Speaker", description:"Ultra-portable waterproof speaker with JBL Pro Sound and IP67 rating.", price:"₹2,699", originalPrice:"₹3,999", discount:"33%", category:"Electronics", rating:4.5, reviews:38000, image:"https://m.media-amazon.com/images/I/71f5MXHPGVL._AC_SL1500_.jpg", asin:"B08KZPF7M2", badge:"Top Rated", dealScore:86 }
 ];
+
+// Expose to window for scripts that reference window.PRODUCTS / window.CATEGORIES
+if (typeof window !== 'undefined') {
+  window.PRODUCTS = PRODUCTS;
+  window.CATEGORIES = CATEGORIES;
+  window.SITE_CONFIG = SITE_CONFIG;
+}

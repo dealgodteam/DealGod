@@ -2301,6 +2301,10 @@ body.nav-open { overflow: hidden; }
   color: var(--accent-gold);
   background: rgba(245, 197, 24, 0.08);
 }
+.mobile-nav-link.active {
+  color: var(--accent-gold);
+  background: rgba(245, 197, 24, 0.12);
+}
 .mobile-nav-telegram {
   margin-top: 1rem;
   background: rgba(245, 197, 24, 0.1);
@@ -3032,4 +3036,41 @@ body.nav-open { overflow: hidden; }
 .telegram-float:hover {
   transform: scale(1.12);
   box-shadow: 0 6px 28px rgba(0, 136, 204, 0.6);
+}
+
+/* ================================================================
+   FLOATING DEALS BUTTON (sub-pages)
+   ================================================================ */
+.deals-float-btn {
+  position: fixed;
+  bottom: 78px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff6b35, #e6a817);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  z-index: 9998;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: pulse-glow 2s infinite;
+}
+.deals-float-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 30px rgba(255, 107, 53, 0.7);
+}
+.deals-float-icon { font-size: 1.1rem; }
+.deals-float-text { display: inline; }
+.top-deals-float-text { display: none; }
+.top-deals-float-icon { display: inline; }
+@media (max-width: 768px) {
+  .deals-float-btn { bottom: 68px; right: 1.2rem; padding: 8px 14px; font-size: 0.85rem; }
+  .top-deals-float-btn { width: auto; padding: 8px 14px; border-radius: 999px; font-size: 0.85rem; }
+  .top-deals-float-text { display: inline; margin-left: 4px; }
 }

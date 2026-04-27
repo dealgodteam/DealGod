@@ -28,6 +28,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Netlify Identity: redirect invite/confirm/recovery tokens to admin page -->
+  <script>
+    (function() {
+      var h = window.location.hash;
+      if (h && /token=/.test(h)) {
+        window.location.href = '/admin/' + h;
+      }
+    })();
+  </script>
 
   <!-- NAVIGATION -->
   <nav class="navbar" role="navigation">
@@ -48,8 +57,24 @@
         <span>🔗</span>
         Amazon Associates
       </div>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+    <div class="mobile-nav-content">
+      <a href="index.html" class="mobile-nav-link">🏠 Home</a>
+      <a href="index.html#products" class="mobile-nav-link">🔥 Deals</a>
+      <a href="blog.html" class="mobile-nav-link">📝 Blog</a>
+      <a href="about.html" class="mobile-nav-link active">ℹ️ About</a>
+      <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+      <a href="privacy.html" class="mobile-nav-link">🔒 Privacy</a>
+      <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="mobile-nav-link mobile-nav-telegram">📱 Join Telegram</a>
+    </div>
+  </div>
 
   <!-- ABOUT HERO -->
   <header class="about-hero">
@@ -223,6 +248,7 @@
     </div>
   </footer>
 
+  <script src="nav.js"></script>
   <script>
     document.getElementById('footer-year').textContent = new Date().getFullYear();
   </script>

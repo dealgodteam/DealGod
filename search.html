@@ -8,7 +8,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self';
+    script-src 'self' 'unsafe-inline';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src https://fonts.gstatic.com;
     img-src 'self' https://m.media-amazon.com https://placehold.co data:;
@@ -24,6 +24,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Netlify Identity: redirect invite/confirm/recovery tokens to admin page -->
+  <script>
+    (function() {
+      var h = window.location.hash;
+      if (h && /token=/.test(h)) {
+        window.location.href = '/admin/' + h;
+      }
+    })();
+  </script>
+
   <!-- NAVIGATION -->
   <nav class="navbar" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
@@ -55,8 +65,22 @@
         </form>
         <div class="search-autocomplete-dropdown" id="search-autocomplete" style="display: none;"></div>
       </div>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+    <div class="mobile-nav-content">
+      <a href="index.html" class="mobile-nav-link">🏠 Home</a>
+      <a href="index.html#products" class="mobile-nav-link">🔥 Deals</a>
+      <a href="blog.html" class="mobile-nav-link">📝 Blog</a>
+      <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+      <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="mobile-nav-link mobile-nav-telegram">📱 Join Telegram</a>
+    </div>
+  </div>
 
   <!-- SEARCH HEADER -->
   <header class="hero" style="padding: 6rem 1rem 3rem;">
@@ -91,5 +115,6 @@
 
   <script src="data.js"></script>
   <script src="search-page.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>
