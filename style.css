@@ -703,6 +703,48 @@ body::before {
   gap: 1.5rem;
 }
 
+/* ================================================================
+   PAGINATION
+================================================================ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem 0;
+}
+
+.page-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.page-btn:hover:not(:disabled) {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 /* ---- Product Card ---- */
 .product-card {
   background: var(--bg-card);
@@ -945,30 +987,27 @@ body::before {
 .btn-buy-icon { font-size: 1rem; }
 
 .btn-wishlist {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-sm);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   transition: var(--transition-smooth);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
 }
 
 .btn-wishlist:hover {
-  background: rgba(255, 107, 157, 0.12);
-  border-color: rgba(255, 107, 157, 0.4);
   color: var(--accent-secondary);
-  transform: scale(1.08);
+  transform: scale(1.15);
 }
 
 .btn-wishlist.wishlisted {
   color: var(--accent-secondary);
-  border-color: rgba(255, 107, 157, 0.4);
 }
 
 /* ================================================================
@@ -1171,25 +1210,23 @@ footer {
    SHARE MENU
    ================================================================ */
 .btn-share {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-sm);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   transition: var(--transition-smooth);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
 }
 
 .btn-share:hover {
-  background: rgba(76, 201, 240, 0.12);
-  border-color: rgba(76, 201, 240, 0.4);
-  color: var(--accent-blue);
-  transform: scale(1.08);
+  color: var(--text-primary);
+  transform: scale(1.15);
 }
 
 .share-menu {
@@ -2446,7 +2483,7 @@ body.nav-open { overflow: hidden; }
   .card-desc { font-size: 0.75rem; -webkit-line-clamp: 1; }
   .card-footer { padding: 0.7rem 0.8rem 0.8rem; gap: 0.4rem; flex-wrap: wrap; }
   .btn-buy { padding: 8px 12px; font-size: 0.78rem; flex: 1 1 100%; }
-  .btn-wishlist, .btn-share { width: 34px; height: 34px; font-size: 0.85rem; }
+  .btn-wishlist, .btn-share { width: 32px; height: 32px; font-size: 1rem; }
   .price-current { font-size: 1.1rem; }
   .card-badge { font-size: 0.6rem; top: 8px; left: 8px; padding: 3px 7px; }
   .card-discount { font-size: 0.65rem; top: 8px; right: 8px; }
@@ -2512,7 +2549,7 @@ body.nav-open { overflow: hidden; }
   .hero-cta-group { gap: 0.75rem; margin-top: 1.5rem; }
   .hero-deals-btn { padding: 11px 20px; font-size: 0.9rem; }
 
-  .product-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
   .card-image-wrap { padding-top: 55%; }
   .btn-buy { flex: 1 1 100%; }
   .card-footer { justify-content: center; }
@@ -2536,6 +2573,10 @@ body.nav-open { overflow: hidden; }
 
   .sort-controls { width: 100%; }
   .sort-select { flex: 1; }
+
+  .pagination { gap: 0.5rem; margin-top: 1.5rem; }
+  .page-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+  .page-info { font-size: 0.8rem; }
 }
 
 /* ================================================================

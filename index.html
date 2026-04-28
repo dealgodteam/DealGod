@@ -98,6 +98,7 @@
       <div class="nav-links" role="navigation" aria-label="Quick links">
         <a href="#hero" class="nav-link">Home</a>
         <a href="#products" class="nav-link">🔥 Deals</a>
+        <a href="gift-finder.html" class="nav-link">🎁 Gift Finder</a>
         <a href="blog.html" class="nav-link">📝 Blog</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="contact.html" class="nav-link">Contact</a>
@@ -141,6 +142,7 @@
     <div class="mobile-nav-content">
       <a href="#hero" class="mobile-nav-link">🏠 Home</a>
       <a href="#products" class="mobile-nav-link">🔥 Deals</a>
+      <a href="gift-finder.html" class="mobile-nav-link">🎁 Gift Finder</a>
       <a href="blog.html" class="mobile-nav-link">📝 Blog</a>
       <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
       <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
@@ -206,88 +208,6 @@
       </div>
     </div>
   </header>
-
-  <!-- ================================================================
-       AI GIFT FINDER
-  ================================================================ -->
-  <section class="gift-finder-section" id="gift-finder" aria-label="AI Gift Finder">
-    <div class="gift-finder-inner">
-      <div class="gift-finder-header">
-        <h2>🎁 DealGod AI Gift Finder</h2>
-        <p>Not sure what to buy? Let our smart algorithm find the perfect deal.</p>
-      </div>
-      <form class="gift-finder-form" id="gift-finder-form">
-        <div class="gf-select-group">
-          <label for="gf-recipient">Who is it for?</label>
-          <select id="gf-recipient" required>
-            <option value="" disabled selected>Select recipient...</option>
-            <option value="partner">Partner / Spouse</option>
-            <option value="parents">Parents</option>
-            <option value="kids">Kids / Teens</option>
-            <option value="friend">Friend</option>
-            <option value="myself">Treat Myself</option>
-          </select>
-        </div>
-        <div class="gf-select-group">
-          <label for="gf-occasion">Occasion?</label>
-          <select id="gf-occasion" required>
-            <option value="" disabled selected>Select occasion...</option>
-            <option value="birthday">Birthday</option>
-            <option value="anniversary">Anniversary</option>
-            <option value="wedding">Wedding</option>
-            <option value="just-because">Just Because</option>
-          </select>
-        </div>
-        <div class="gf-select-group">
-          <label for="gf-budget">Budget?</label>
-          <select id="gf-budget" required>
-            <option value="" disabled selected>Select budget...</option>
-            <option value="under500">Under ₹500</option>
-            <option value="under2000">₹500 - ₹2,000</option>
-            <option value="under5000">₹2,000 - ₹5,000</option>
-            <option value="under10000">₹5,000 - ₹10,000</option>
-            <option value="premium">₹10,000+</option>
-          </select>
-        </div>
-        <button type="submit" class="gf-submit-btn">Find Gifts 🪄</button>
-      </form>
-      <div class="gf-results-wrap" id="gf-results-wrap" style="display:none;">
-        <h3>✨ Recommended for you:</h3>
-        <div class="gf-results-grid" id="gf-results-grid"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================================
-       WHY DEALGOD
-  ================================================================ -->
-  <section class="why-section" id="why-section" aria-label="Why choose DealGod">
-    <div class="why-inner">
-      <h2 class="why-title">Why Shop With <span>DealGod</span>?</h2>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">🎯</div>
-          <h3>Handpicked Deals</h3>
-          <p>Every product is manually curated — no junk, no spam, only the best discounts from Amazon India.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">💸</div>
-          <h3>Maximum Savings</h3>
-          <p>We find deals with 30-70% off MRP so you never pay full price again.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">⭐</div>
-          <h3>Top Rated Only</h3>
-          <p>All products have 4+ star ratings with thousands of verified buyer reviews.</p>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🛡️</div>
-          <h3>100% Trusted</h3>
-          <p>Buy directly from Amazon India. Full warranty, easy returns, Prime delivery available.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ================================================================
        CATEGORY FILTER
@@ -363,23 +283,32 @@
         </div>
       </div>
 
-      <div class="product-grid" id="product-grid" role="list" aria-label="Product catalog">
-        <!-- Skeleton Loader (shown while products load) -->
-        <div id="skeleton-loader" class="skeleton-grid">
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-        </div>
+      <!-- Skeleton Loader (shown while products load) -->
+      <div id="skeleton-loader" class="skeleton-grid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
 
-        <!-- Empty State -->
-        <div id="empty-state" class="empty-state" role="status" aria-live="polite">
-          <div class="empty-icon" aria-hidden="true">🔍</div>
-          <h3>No Deals Found</h3>
-          <p>Try a different search term, adjust the price range, or browse another category.</p>
-        </div>
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state" role="status" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">🔍</div>
+        <h3>No Deals Found</h3>
+        <p>Try a different search term, adjust the price range, or browse another category.</p>
+      </div>
+
+      <div class="product-grid" id="product-grid" role="list" aria-label="Product catalog">
+        <!-- Products rendered here -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination">
+        <button class="page-btn" id="prev-page" disabled>← Previous</button>
+        <span class="page-info" id="page-info">Page 1 of 10</span>
+        <button class="page-btn" id="next-page">Next →</button>
       </div>
     </div>
   </main>
@@ -396,6 +325,37 @@
       Prices shown are approximate and subject to change on Amazon.in.
     </p>
   </div>
+
+  <!-- ================================================================
+       WHY DEALGOD
+  ================================================================ -->
+  <section class="why-section" id="why-section" aria-label="Why choose DealGod">
+    <div class="why-inner">
+      <h2 class="why-title">Why Shop With <span>DealGod</span>?</h2>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🎯</div>
+          <h3>Handpicked Deals</h3>
+          <p>Every product is manually curated — no junk, no spam, only the best discounts from Amazon India.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">💸</div>
+          <h3>Maximum Savings</h3>
+          <p>We find deals with 30-70% off MRP so you never pay full price again.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">⭐</div>
+          <h3>Top Rated Only</h3>
+          <p>All products have 4+ star ratings with thousands of verified buyer reviews.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🛡️</div>
+          <h3>100% Trusted</h3>
+          <p>Buy directly from Amazon India. Full warranty, easy returns, Prime delivery available.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ================================================================
        FOOTER
@@ -509,8 +469,8 @@
         }
       });
       obs.observe(grid, { childList: true });
-      // Fallback: hide after 5 seconds regardless
-      setTimeout(function() { skel.style.display = 'none'; }, 5000);
+      // Fallback: hide after 3 seconds regardless
+      setTimeout(function() { skel.style.display = 'none'; }, 3000);
     })();
   </script>
 </body>

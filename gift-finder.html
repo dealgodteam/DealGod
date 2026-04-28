@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+    img-src 'self' https://m.media-amazon.com https://placehold.co data:;
+    connect-src 'self' https://formspree.io;
+    frame-src 'none';
+    object-src 'none';
+    base-uri 'self';
+  " />
+
+  <title>AI Gift Finder – DealGod</title>
+  <meta name="description" content="Find the perfect gift with DealGod AI Gift Finder. Smart recommendations based on recipient, occasion and budget." />
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand" aria-label="DealGod Home">
+        <div class="nav-logo-wrap">
+          <img src="logo.png" alt="" class="nav-logo-img" />
+        </div>
+        <span class="nav-brand-name">DealGod</span>
+      </a>
+
+      <div class="nav-links" role="menubar">
+        <a href="index.html" class="nav-link" role="menuitem">Home</a>
+        <a href="index.html#products" class="nav-link" role="menuitem">Deals</a>
+        <a href="blog.html" class="nav-link" role="menuitem">Blog</a>
+        <a href="about.html" class="nav-link" role="menuitem">About</a>
+      </div>
+
+      <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="nav-telegram-btn" aria-label="Join Telegram">
+        <span>Join Telegram</span>
+        <svg class="nav-telegram-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.8c-.19.91-.74 1.13-1.5.71l-4.15-3.06-2.01 1.85c-.23.23-.42.42-.83.42z"/>
+        </svg>
+      </a>
+
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar"><a href="index.html">Home</a> <span>/</span> Gift Finder</div>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+    <div class="mobile-nav-content">
+      <a href="index.html" class="mobile-nav-link">Home</a>
+      <a href="index.html#products" class="mobile-nav-link">Deals</a>
+      <a href="blog.html" class="mobile-nav-link">Blog</a>
+      <a href="about.html" class="mobile-nav-link">About</a>
+      <a href="contact.html" class="mobile-nav-link">Contact</a>
+      <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="mobile-nav-link mobile-nav-telegram">Join Telegram</a>
+    </div>
+  </div>
+
+  <!-- Gift Finder Section -->
+  <section class="gift-finder-section gf-page" id="gift-finder" aria-label="AI Gift Finder">
+    <div class="gift-finder-inner">
+      <div class="gift-finder-header">
+        <h1>AI Gift Finder</h1>
+        <p>Not sure what to buy? Let our smart algorithm find the perfect deal based on recipient, occasion and budget.</p>
+      </div>
+      <form class="gift-finder-form" id="gift-finder-form">
+        <div class="gf-select-group">
+          <label for="gf-recipient">Who is it for?</label>
+          <select id="gf-recipient" required>
+            <option value="" disabled selected>Select recipient...</option>
+            <option value="partner">Partner / Spouse</option>
+            <option value="parents">Parents</option>
+            <option value="kids">Kids / Teens</option>
+            <option value="friend">Friend</option>
+            <option value="myself">Treat Myself</option>
+          </select>
+        </div>
+        <div class="gf-select-group">
+          <label for="gf-occasion">Occasion?</label>
+          <select id="gf-occasion" required>
+            <option value="" disabled selected>Select occasion...</option>
+            <option value="birthday">Birthday</option>
+            <option value="anniversary">Anniversary</option>
+            <option value="wedding">Wedding</option>
+            <option value="just-because">Just Because</option>
+          </select>
+        </div>
+        <div class="gf-select-group">
+          <label for="gf-budget">Budget?</label>
+          <select id="gf-budget" required>
+            <option value="" disabled selected>Select budget...</option>
+            <option value="under500">Under ₹500</option>
+            <option value="under2000">₹500 - ₹2,000</option>
+            <option value="under5000">₹2,000 - ₹5,000</option>
+            <option value="under10000">₹5,000 - ₹10,000</option>
+            <option value="premium">₹10,000+</option>
+          </select>
+        </div>
+        <button type="submit" class="gf-submit-btn">Find Gifts</button>
+      </form>
+      <div class="gf-results-wrap" id="gf-results-wrap" style="display:none;">
+        <h3>Recommended for you:</h3>
+        <div class="gf-results-grid" id="gf-results-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <div class="footer-brand-name">
+          <img src="logo.png" alt="DealGod" class="footer-logo-img" />
+          DealGod
+        </div>
+        <p class="footer-tagline">The God of Amazon Deals.</p>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="index.html">Home</a>
+          <a href="index.html#products">Deals</a>
+          <a href="blog.html">Blog</a>
+          <a href="about.html">About Us</a>
+        </nav>
+      </div>
+      <div class="footer-right">
+        <p class="footer-copy">
+          © <span id="footer-year">2026</span> DealGod. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="nav.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Simple Gift Finder Logic
+    (function() {
+      const form = document.getElementById('gift-finder-form');
+      const resultsWrap = document.getElementById('gf-results-wrap');
+      const resultsGrid = document.getElementById('gf-results-grid');
+
+      function parsePrice(str) {
+        return parseFloat(String(str).replace(/[^0-9.]/g, '')) || 0;
+      }
+
+      function buildCard(product) {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <a href="${product.url || '#'}" target="_blank" rel="noopener noreferrer sponsored" class="card-link">
+            <div class="card-image-wrap">
+              <img src="${product.image}" alt="${product.title}" class="card-image" loading="lazy" referrerpolicy="no-referrer" />
+              ${product.discount ? `<span class="card-discount">${product.discount}</span>` : ''}
+            </div>
+            <div class="card-body">
+              <span class="card-category">${product.category}</span>
+              <h3 class="card-title">${product.title}</h3>
+              <div class="card-price-row">
+                <span class="price-current">${product.price}</span>
+                ${product.originalPrice ? `<span class="price-original">${product.originalPrice}</span>` : ''}
+              </div>
+            </div>
+          </a>
+        `;
+        return card;
+      }
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const budget = document.getElementById('gf-budget').value;
+          let maxPrice = Infinity;
+          if (budget === 'under500') maxPrice = 500;
+          else if (budget === 'under2000') maxPrice = 2000;
+          else if (budget === 'under5000') maxPrice = 5000;
+          else if (budget === 'under10000') maxPrice = 10000;
+
+          const filtered = PRODUCTS.filter(p => parsePrice(p.price) <= maxPrice);
+          const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+          const selected = shuffled.slice(0, 6);
+
+          resultsGrid.innerHTML = '';
+          if (selected.length === 0) {
+            resultsGrid.innerHTML = '<p style="color:var(--text-muted)">No matching gifts found. Try a different budget!</p>';
+          } else {
+            selected.forEach(p => resultsGrid.appendChild(buildCard(p)));
+          }
+          resultsWrap.style.display = 'block';
+          resultsWrap.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
