@@ -758,6 +758,9 @@ body::before {
   position: relative;
   opacity: 0;
   transform: translateY(24px);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .product-card.visible {
