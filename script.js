@@ -9,6 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
   let PRODUCTS = window.PRODUCTS;
   let CATEGORIES = window.CATEGORIES;
 
+  // DEBUG: Log product availability
+  if (!Array.isArray(PRODUCTS) || PRODUCTS.length === 0) {
+    console.error('[DealGod] CRITICAL: PRODUCTS not loaded. window.PRODUCTS =', window.PRODUCTS);
+    // Try one more time to load from data.js global
+    if (typeof window.PRODUCTS !== 'undefined' && window.PRODUCTS !== null) {
+      PRODUCTS = window.PRODUCTS;
+    }
+  } else {
+    console.log(`[DealGod] Loaded ${PRODUCTS.length} products`);
+  }
+
   /* ================================================================
      SECURITY: Input Sanitization
   ================================================================ */
@@ -220,6 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
      FILTER + SORT PIPELINE
   ================================================================ */
   function getFilteredSorted() {
+    if (!Array.isArray(PRODUCTS)) {
+      console.error('[DealGod] PRODUCTS is not an array:', PRODUCTS);
+      return [];
+    }
     let list = PRODUCTS.filter(p => {
       // Category filter
       const matchCat = activeCategory === 'All' || p.category === activeCategory;
@@ -260,10 +275,16 @@ document.addEventListener('DOMContentLoaded', () => {
         list.sort((a, b) => parseDiscount(b.discount) - parseDiscount(a.discount));
         break;
       case 'best':
+        list.sort((a, b) => {
+          const scoreA = ((a.dealScore || 0) * 100) + (parseDiscount(a.discount || '0') || 0) + ((a.rating || 0) * 10);
+          const scoreB = ((b.dealScore || 0) * 100) + (parseDiscount(b.discount || '0') || 0) + ((b.rating || 0) * 10);
+          return scoreB - scoreA;
+        });
+        break;
       default:
         list.sort((a, b) => {
-          const scoreA = (a.dealScore || 0) * 100 + parseDiscount(a.discount) + (a.rating * 10);
-          const scoreB = (b.dealScore || 0) * 100 + parseDiscount(b.discount) + (b.rating * 10);
+          const scoreA = ((a.dealScore || 0) * 100) + (parseDiscount(a.discount || '0') || 0) + ((a.rating || 0) * 10);
+          const scoreB = ((b.dealScore || 0) * 100) + (parseDiscount(b.discount || '0') || 0) + ((b.rating || 0) * 10);
           return scoreB - scoreA;
         });
         break;
@@ -277,15 +298,21 @@ document.addEventListener('DOMContentLoaded', () => {
   ================================================================ */
   function renderProducts() {
     try {
+      if (!grid) {
+        console.error('[DealGod] Product grid element not found');
+        return;
+      }
+
       const filtered = getFilteredSorted();
       const totalProducts = filtered.length;
+      console.log(`[DealGod] Rendering: ${totalProducts} products, page ${currentPage}`);
 
       grid.innerHTML = '';
 
       if (totalProducts === 0) {
         emptyState.classList.add('visible');
         grid.style.display = 'none';
-        countEl.innerHTML = 'Showing <strong>0</strong> products';
+        if (countEl) countEl.innerHTML = 'Showing <strong>0</strong> products';
         updatePagination(0, 0);
         return;
       }
@@ -302,7 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const endIndex = Math.min(startIndex + PRODUCTS_PER_PAGE, totalProducts);
       const paginatedProducts = filtered.slice(startIndex, endIndex);
 
-      countEl.innerHTML = `Showing <strong>${startIndex + 1}-${endIndex}</strong> of <strong>${totalProducts}</strong> products`;
+      if (countEl) {
+        countEl.innerHTML = `Showing <strong>${startIndex + 1}-${endIndex}</strong> of <strong>${totalProducts}</strong> products`;
+      }
 
       paginatedProducts.forEach(product => {
         const card = buildCard(product);
@@ -320,10 +349,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.handleSearchFallback(filtered.length);
       }
     } catch (err) {
-      console.error('renderProducts failed:', err);
-      countEl.innerHTML = 'Showing <strong>0</strong> products';
-      emptyState.classList.add('visible');
-      grid.style.display = 'none';
+      console.error('[DealGod] renderProducts failed:', err);
+      if (countEl) countEl.innerHTML = 'Showing <strong>0</strong> products';
+      if (emptyState) emptyState.classList.add('visible');
+      if (grid) grid.style.display = 'none';
     }
   }
 
@@ -338,8 +367,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!prevBtn || !nextBtn || !pageInfo) return;
 
-    if (total <= 1) {
+    if (total <= 0 || total === 1) {
       if (pagination) pagination.style.display = 'none';
+      pageInfo.textContent = total === 0 ? '' : `Page 1 of 1`;
       return;
     }
 
@@ -1513,26 +1543,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     injectAnalytics();
 
-    // Restore saved filters from localStorage
+    // Restore saved filters from localStorage (with validation)
     try {
       const savedCat = localStorage.getItem('dg_filter_category');
       const savedPrice = localStorage.getItem('dg_filter_price');
       const savedSort = localStorage.getItem('dg_filter_sort');
-      if (savedCat) {
+      const validCategories = ['All', ...new Set((CATEGORIES || []).map(c => typeof c === 'string' ? c : c?.name).filter(Boolean))];
+      const validPriceRanges = Object.keys(PRICE_RANGES);
+      const validSorts = ['best', 'price-low', 'price-high', 'rating', 'discount'];
+
+      if (savedCat && validCategories.includes(savedCat)) {
         activeCategory = savedCat;
         filterChips.forEach(c => {
           c.classList.toggle('active', c.dataset.category === savedCat);
           c.setAttribute('aria-pressed', c.dataset.category === savedCat ? 'true' : 'false');
         });
       }
-      if (savedPrice) {
+      if (savedPrice && validPriceRanges.includes(savedPrice)) {
         activePriceRange = savedPrice;
         priceChips.forEach(c => {
           c.classList.toggle('active', c.dataset.range === savedPrice);
           c.setAttribute('aria-pressed', c.dataset.range === savedPrice ? 'true' : 'false');
         });
       }
-      if (savedSort && sortSelect) {
+      if (savedSort && validSorts.includes(savedSort) && sortSelect) {
         sortSelect.value = savedSort;
         sortMode = savedSort;
       } else {

@@ -97,7 +97,7 @@
       <!-- Nav Links -->
       <div class="nav-links" role="navigation" aria-label="Quick links">
         <a href="#hero" class="nav-link">Home</a>
-        <a href="#products" class="nav-link">🔥 Deals</a>
+        <a href="#filters" class="nav-link">🔥 Deals</a>
         <a href="gift-finder.html" class="nav-link">🎁 Gift Finder</a>
         <a href="blog.html" class="nav-link">📝 Blog</a>
         <a href="about.html" class="nav-link">About</a>
@@ -129,7 +129,7 @@
         Amazon Associates
       </div>
       <!-- Shop Deals CTA -->
-      <a href="#products" class="nav-shop-btn" id="nav-shop-btn">🔥 Shop Deals</a>
+      <a href="#filters" class="nav-shop-btn" id="nav-shop-btn">🔥 Shop Deals</a>
       <!-- Hamburger Menu -->
       <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -141,7 +141,7 @@
   <div class="mobile-nav-overlay" id="mobile-nav-overlay">
     <div class="mobile-nav-content">
       <a href="#hero" class="mobile-nav-link">🏠 Home</a>
-      <a href="#products" class="mobile-nav-link">🔥 Deals</a>
+      <a href="#filters" class="mobile-nav-link">🔥 Deals</a>
       <a href="gift-finder.html" class="mobile-nav-link">🎁 Gift Finder</a>
       <a href="blog.html" class="mobile-nav-link">📝 Blog</a>
       <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
@@ -171,7 +171,7 @@
         Everything you need — nothing you don't.
       </p>
       <div class="hero-cta-group">
-        <a href="#products" class="hero-deals-btn">
+        <a href="#filters" class="hero-deals-btn">
           <span>Browse All 125+ Deals <span style="opacity:.85">🔥</span></span>
           <svg class="hero-deals-btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
@@ -212,7 +212,7 @@
   <!-- ================================================================
        CATEGORY FILTER
   ================================================================ -->
-  <section class="filter-section" aria-label="Category filters">
+  <section class="filter-section" id="filters" aria-label="Category filters">
     <div class="filter-inner">
       <span class="filter-label" id="filter-label">Browse:</span>
       <div class="filter-chips" role="group" aria-labelledby="filter-label">
@@ -303,6 +303,11 @@
       <div class="product-grid" id="product-grid" role="list" aria-label="Product catalog">
         <!-- Products rendered here -->
       </div>
+      <noscript>
+        <div style="text-align:center; padding:3rem; color:var(--text-muted);">
+          <p>JavaScript is required to display deals. Please enable JavaScript in your browser settings.</p>
+        </div>
+      </noscript>
 
       <!-- Pagination -->
       <div class="pagination" id="pagination">
@@ -370,7 +375,7 @@
         <p class="footer-tagline">The God of Amazon Deals.</p>
         <nav class="footer-links" aria-label="Footer navigation">
           <a href="#hero">Home</a>
-          <a href="#products">Deals</a>
+          <a href="#filters">Deals</a>
           <a href="blog.html">Blog</a>
           <a href="about.html">About Us</a>
           <a href="contact.html">Contact</a>
@@ -443,13 +448,25 @@
       <button class="top-deals-popup-close" id="top-deals-popup-close">✕</button>
     </div>
     <div class="top-deals-popup-list" id="top-deals-popup-list"></div>
-    <a href="#products" class="top-deals-popup-cta" id="top-deals-browse-all">→</a>
+    <a href="#filters" class="top-deals-popup-cta" id="top-deals-browse-all">→</a>
   </div>
 
   <!-- Scripts -->
-  <script src="data.js"></script>
-  <script src="script.js"></script>
+  <script src="data.js?v=125"></script>
   <script>
+    // Diagnostic: verify data.js loaded correctly
+    if (!window.PRODUCTS || !Array.isArray(window.PRODUCTS)) {
+      console.error('[DealGod] DIAGNOSTIC: data.js did not expose window.PRODUCTS properly');
+    } else {
+      console.log('[DealGod] DIAGNOSTIC: data.js loaded', window.PRODUCTS.length, 'products');
+    }
+  </script>
+  <script src="script.js?v=125"></script>
+  <script>
+    // Catch any unhandled JS errors
+    window.onerror = function(msg, url, line) {
+      console.error('[DealGod] Global error:', msg, 'at', url, 'line', line);
+    };
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
     // Register Service Worker for offline caching
