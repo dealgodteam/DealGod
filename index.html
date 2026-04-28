@@ -97,11 +97,12 @@
       <!-- Nav Links -->
       <div class="nav-links" role="navigation" aria-label="Quick links">
         <a href="#hero" class="nav-link">Home</a>
-        <a href="#filters" class="nav-link">🔥 Deals</a>
+        <a href="#products" class="nav-link">🔥 Deals</a>
         <a href="gift-finder.html" class="nav-link">🎁 Gift Finder</a>
         <a href="blog.html" class="nav-link">📝 Blog</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="contact.html" class="nav-link">Contact</a>
+        <a href="#why-section" class="nav-link">⭐ Why Us</a>
       </div>
 
       <!-- Search -->
@@ -141,11 +142,12 @@
   <div class="mobile-nav-overlay" id="mobile-nav-overlay">
     <div class="mobile-nav-content">
       <a href="#hero" class="mobile-nav-link">🏠 Home</a>
-      <a href="#filters" class="mobile-nav-link">🔥 Deals</a>
+      <a href="#products" class="mobile-nav-link">🔥 Deals</a>
       <a href="gift-finder.html" class="mobile-nav-link">🎁 Gift Finder</a>
       <a href="blog.html" class="mobile-nav-link">📝 Blog</a>
       <a href="about.html" class="mobile-nav-link">ℹ️ About</a>
       <a href="contact.html" class="mobile-nav-link">📧 Contact</a>
+      <a href="#why-section" class="mobile-nav-link">⭐ Why Us</a>
       <a href="https://t.me/DealGodtelegram" target="_blank" rel="noopener noreferrer" class="mobile-nav-link mobile-nav-telegram">📱 Join Telegram</a>
     </div>
   </div>
@@ -209,43 +211,8 @@
     </div>
   </header>
 
-  <!-- ================================================================
-       CATEGORY FILTER
-  ================================================================ -->
-  <section class="filter-section" id="filters" aria-label="Category filters">
-    <div class="filter-inner">
-      <span class="filter-label" id="filter-label">Browse:</span>
-      <div class="filter-chips" role="group" aria-labelledby="filter-label">
-        <button class="filter-chip active" data-category="All"              id="cat-all"        aria-pressed="true" >🏠 All</button>
-        <button class="filter-chip"        data-category="Electronics"      id="cat-electronics" aria-pressed="false">⚡ Electronics</button>
-        <button class="filter-chip"        data-category="Home & Kitchen"   id="cat-home"        aria-pressed="false">🍳 Home &amp; Kitchen</button>
-        <button class="filter-chip"        data-category="Books"            id="cat-books"       aria-pressed="false">📚 Books</button>
-        <button class="filter-chip"        data-category="Fashion"          id="cat-fashion"     aria-pressed="false">👗 Fashion</button>
-        <button class="filter-chip"        data-category="Health & Beauty"  id="cat-health"      aria-pressed="false">💄 Health &amp; Beauty</button>
-        <button class="filter-chip"        data-category="Sports & Fitness" id="cat-sports"      aria-pressed="false">🏋️ Sports &amp; Fitness</button>
-        <button class="filter-chip"        data-category="Gaming"           id="cat-gaming"      aria-pressed="false">🎮 Gaming</button>
-        <button class="filter-chip"        data-category="Smart Home"       id="cat-smarthome"   aria-pressed="false">💡 Smart Home</button>
-        <button class="filter-chip"        data-category="Toys & Games"     id="cat-toys"        aria-pressed="false">🧸 Toys &amp; Games</button>
-        <button class="filter-chip"        data-category="Office & Stationery" id="cat-office"   aria-pressed="false">🖇️ Office &amp; Stationery</button>
-        <button class="filter-chip"        data-category="Appliances"       id="cat-appliances"  aria-pressed="false">🔌 Appliances</button>
-        <button class="filter-chip"        data-category="Automotive"       id="cat-auto"        aria-pressed="false">🚗 Automotive</button>
-        <button class="filter-chip"        data-category="Baby & Kids"      id="cat-baby"        aria-pressed="false">👶 Baby &amp; Kids</button>
-        <button class="filter-chip"        data-category="Musical Instruments" id="cat-music"    aria-pressed="false">🎸 Musical Instruments</button>
-      </div>
-    </div>
-    <!-- Price Range Filter -->
-    <div class="filter-inner" style="margin-top: 0.8rem;">
-      <span class="filter-label" id="price-label">Price:</span>
-      <div class="filter-chips" role="group" aria-labelledby="price-label">
-        <button class="price-chip active" data-range="all"        aria-pressed="true" >All Prices</button>
-        <button class="price-chip"        data-range="under500"   aria-pressed="false">Under ₹500</button>
-        <button class="price-chip"        data-range="500-2000"   aria-pressed="false">₹500 – ₹2K</button>
-        <button class="price-chip"        data-range="2000-5000"  aria-pressed="false">₹2K – ₹5K</button>
-        <button class="price-chip"        data-range="5000-10000" aria-pressed="false">₹5K – ₹10K</button>
-        <button class="price-chip"        data-range="10000+"     aria-pressed="false">₹10,000+</button>
-      </div>
-    </div>
-  </section>
+
+
 
   <!-- ================================================================
        RECENTLY VIEWED
@@ -272,13 +239,38 @@
           Showing <strong>0</strong> products
         </p>
         <div class="sort-controls">
-          <label for="sort-select" class="sort-label">Sort by:</label>
+          <select id="cat-select" class="sort-select" aria-label="Filter by category">
+            <option value="All">🏠 All Categories</option>
+            <option value="Electronics">⚡ Electronics</option>
+            <option value="Home &amp; Kitchen">🍳 Home &amp; Kitchen</option>
+            <option value="Books">📚 Books</option>
+            <option value="Fashion">👗 Fashion</option>
+            <option value="Health &amp; Beauty">💄 Health &amp; Beauty</option>
+            <option value="Sports &amp; Fitness">🏋️ Sports &amp; Fitness</option>
+            <option value="Gaming">🎮 Gaming</option>
+            <option value="Smart Home">💡 Smart Home</option>
+            <option value="Toys &amp; Games">🧸 Toys &amp; Games</option>
+            <option value="Office &amp; Stationery">🖇️ Office</option>
+            <option value="Appliances">🔌 Appliances</option>
+            <option value="Automotive">🚗 Automotive</option>
+            <option value="Baby &amp; Kids">👶 Baby &amp; Kids</option>
+            <option value="Musical Instruments">🎸 Music</option>
+          </select>
+          <select id="price-select" class="sort-select" aria-label="Filter by price">
+            <option value="all">💰 All Prices</option>
+            <option value="under500">Under ₹500</option>
+            <option value="500-2000">₹500 – ₹2K</option>
+            <option value="2000-5000">₹2K – ₹5K</option>
+            <option value="5000-10000">₹5K – ₹10K</option>
+            <option value="10000+">₹10,000+</option>
+          </select>
+          <label for="sort-select" class="sort-label">Sort:</label>
           <select id="sort-select" class="sort-select" aria-label="Sort products">
-            <option value="best" selected>Best Deals First</option>
+            <option value="best" selected>Best Deals</option>
             <option value="discount">Biggest Discount</option>
             <option value="rating">Top Rated</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+            <option value="price-low">Price: Low→High</option>
+            <option value="price-high">Price: High→Low</option>
           </select>
         </div>
       </div>
@@ -331,6 +323,8 @@
     </p>
   </div>
 
+
+
   <!-- ================================================================
        WHY DEALGOD
   ================================================================ -->
@@ -375,7 +369,8 @@
         <p class="footer-tagline">The God of Amazon Deals.</p>
         <nav class="footer-links" aria-label="Footer navigation">
           <a href="#hero">Home</a>
-          <a href="#filters">Deals</a>
+          <a href="#products">Deals</a>
+          <a href="#why-section">⭐ Why Us</a>
           <a href="blog.html">Blog</a>
           <a href="about.html">About Us</a>
           <a href="contact.html">Contact</a>

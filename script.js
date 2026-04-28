@@ -182,6 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
   const filterChips = document.querySelectorAll('.filter-chip');
   const sortSelect  = document.getElementById('sort-select');
+  const catSelect   = document.getElementById('cat-select');
+  const priceSelect = document.getElementById('price-select');
   const backToTop   = document.getElementById('back-to-top');
   const toastCont   = document.getElementById('toast-container');
   const priceChips  = document.querySelectorAll('.price-chip');
@@ -612,11 +614,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* Alert button */
-    card.querySelector('.btn-alert').addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      openAlertModal(product.title);
-    });
+    const alertBtn = card.querySelector('.btn-alert');
+    if (alertBtn) {
+      alertBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openAlertModal(product.title);
+      });
+    }
 
     /* Deal Score Voting (Mock) */
     const scoreUp = card.querySelector('.score-up');
@@ -949,11 +954,35 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ================================================================
+     CATEGORY SELECT (dropdown)
+  ================================================================ */
+  if (catSelect) {
+    catSelect.addEventListener('change', () => {
+      activeCategory = catSelect.value;
+      currentPage = 1;
+      localStorage.setItem('dg_filter_category', activeCategory);
+      renderProducts();
+    });
+  }
+
+  /* ================================================================
+     PRICE SELECT (dropdown)
+  ================================================================ */
+  if (priceSelect) {
+    priceSelect.addEventListener('change', () => {
+      activePriceRange = priceSelect.value;
+      currentPage = 1;
+      localStorage.setItem('dg_filter_price', activePriceRange);
+      renderProducts();
+    });
+  }
+
+  /* ================================================================
      SORT
   ================================================================ */
   sortSelect.addEventListener('change', () => {
     sortMode = sortSelect.value;
-    currentPage = 1; // Reset to first page on sort change
+    currentPage = 1;
     localStorage.setItem('dg_filter_sort', sortMode);
     renderProducts();
   });
@@ -1567,6 +1596,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (savedCat && validCategories.includes(savedCat)) {
         activeCategory = savedCat;
+        if (catSelect) catSelect.value = savedCat;
         filterChips.forEach(c => {
           c.classList.toggle('active', c.dataset.category === savedCat);
           c.setAttribute('aria-pressed', c.dataset.category === savedCat ? 'true' : 'false');
@@ -1574,6 +1604,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (savedPrice && validPriceRanges.includes(savedPrice)) {
         activePriceRange = savedPrice;
+        if (priceSelect) priceSelect.value = savedPrice;
         priceChips.forEach(c => {
           c.classList.toggle('active', c.dataset.range === savedPrice);
           c.setAttribute('aria-pressed', c.dataset.range === savedPrice ? 'true' : 'false');
@@ -1604,6 +1635,46 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTopDealsPopup();
     initSearchLogic();
     initMobileMenu();
+
+    /* ================================================================
+       FILTER JUMP BUTTONS
+    ================================================================ */
+    const jumpCatBtn   = document.getElementById('jump-categories');
+    const jumpPriceBtn = document.getElementById('jump-price');
+
+    if (jumpCatBtn) {
+      jumpCatBtn.addEventListener('click', () => {
+        const filterSection = document.getElementById('filters');
+        if (filterSection) {
+          filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Briefly highlight the category chips to draw attention
+          const chips = filterSection.querySelectorAll('.filter-chip');
+          chips.forEach(c => {
+            c.style.transition = 'box-shadow 0.3s';
+            c.style.boxShadow = '0 0 0 2px rgba(245,197,24,0.5)';
+            setTimeout(() => { c.style.boxShadow = ''; }, 900);
+          });
+        }
+      });
+    }
+
+    if (jumpPriceBtn) {
+      jumpPriceBtn.addEventListener('click', () => {
+        const filterSection = document.getElementById('filters');
+        if (filterSection) {
+          filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Briefly highlight the price chips to draw attention
+          setTimeout(() => {
+            const priceChipEls = filterSection.querySelectorAll('.price-chip');
+            priceChipEls.forEach(c => {
+              c.style.transition = 'box-shadow 0.3s';
+              c.style.boxShadow = '0 0 0 2px rgba(245,197,24,0.5)';
+              setTimeout(() => { c.style.boxShadow = ''; }, 900);
+            });
+          }, 350);
+        }
+      });
+    }
 
     console.log('[DealGod] Security active | Features loaded.');
   })();
