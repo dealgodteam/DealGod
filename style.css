@@ -753,32 +753,11 @@ body::before {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  cursor: default;
+  cursor: pointer;
   transition: var(--transition-smooth);
   position: relative;
   opacity: 0;
   transform: translateY(24px);
-}
-
-.card-main-link {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  flex: 1;
-}
-
-.card-main-link:hover {
-  text-decoration: none;
-}
-
-/* Nested links workaround */
-.card-main-link ~ .card-footer .btn-buy,
-.card-main-link ~ .card-footer .btn-wishlist,
-.card-main-link ~ .card-footer .btn-share,
-.card-main-link ~ .card-footer .compare-check {
-  position: relative;
-  z-index: 2;
 }
 
 .product-card.visible {

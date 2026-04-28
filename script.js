@@ -480,41 +480,39 @@ document.addEventListener('DOMContentLoaded', () => {
       : '';
 
     card.innerHTML = `
-      <a href="${affLink}" target="_blank" rel="noopener noreferrer sponsored" class="card-main-link" aria-label="${escapeHtml(safeTitle)} - ${escapeHtml(product.price)}">
-        <div class="card-image-wrap">
-          <img
-            class="card-image"
-            data-src="${escapeHtml(product.image)}"
-            alt="${escapeHtml(safeTitle)}"
-            loading="lazy"
-            decoding="async"
-            referrerpolicy="no-referrer"
-          />
-          ${badgeHtml}
-          <span class="card-discount">-${escapeHtml(product.discount)}</span>
+      <div class="card-image-wrap">
+        <img
+          class="card-image"
+          data-src="${escapeHtml(product.image)}"
+          alt="${escapeHtml(safeTitle)}"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+        />
+        ${badgeHtml}
+        <span class="card-discount">-${escapeHtml(product.discount)}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-category">${escapeHtml(product.category)}</span>
+          ${dealScoreHtml}
         </div>
-        <div class="card-body">
-          <div class="card-meta">
-            <span class="card-category">${escapeHtml(product.category)}</span>
-            ${dealScoreHtml}
-          </div>
-          <h2 class="card-title">${escapeHtml(safeTitle)}</h2>
-          <p class="card-desc">${escapeHtml(product.description)}</p>
-          <div class="card-rating">
-            <div class="stars" aria-label="Rating: ${safeRating} out of 5">${stars}</div>
-            <span class="rating-score">${safeRating}</span>
-            <span class="rating-count">(${safeReviews.toLocaleString('en-IN')} reviews)</span>
-          </div>
-          ${bankOfferHtml}
-          <div class="card-price">
-            <span class="price-current">${escapeHtml(product.price)}</span>
-            <span class="price-original">${escapeHtml(product.originalPrice)}</span>
-          </div>
-          ${priceHistoryHtml}
-          ${countdownHtml}
-          ${couponHtml}
+        <h2 class="card-title">${escapeHtml(safeTitle)}</h2>
+        <p class="card-desc">${escapeHtml(product.description)}</p>
+        <div class="card-rating">
+          <div class="stars" aria-label="Rating: ${safeRating} out of 5">${stars}</div>
+          <span class="rating-score">${safeRating}</span>
+          <span class="rating-count">(${safeReviews.toLocaleString('en-IN')} reviews)</span>
         </div>
-      </a>
+        ${bankOfferHtml}
+        <div class="card-price">
+          <span class="price-current">${escapeHtml(product.price)}</span>
+          <span class="price-original">${escapeHtml(product.originalPrice)}</span>
+        </div>
+        ${priceHistoryHtml}
+        ${countdownHtml}
+        ${couponHtml}
+      </div>
       <div class="card-footer">
         <a
           href="${affLink}"
@@ -636,6 +634,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!voted) { currentScore--; scoreVal.textContent = currentScore; voted = true; scoreUp.style.opacity = '0.5'; scoreDown.style.opacity = '0.5'; showToast('🧊', 'You voted this deal COLD.'); }
       });
     }
+
+    /* Card click -> open Amazon (when clicking non-interactive areas) */
+    card.addEventListener('click', (e) => {
+      // Only navigate if clicking non-interactive parts of the card
+      const tag = e.target.tagName.toLowerCase();
+      const isInteractive = tag === 'button' || tag === 'a' || tag === 'input' || tag === 'select' || tag === 'textarea' ||
+        e.target.closest('button') || e.target.closest('a') || e.target.closest('.card-coupon');
+      if (!isInteractive) {
+        window.open(affLink, '_blank', 'noopener noreferrer');
+        trackRecentlyViewed(product.id);
+      }
+    });
 
     return card;
   }
@@ -1489,7 +1499,10 @@ document.addEventListener('DOMContentLoaded', () => {
   ================================================================ */
   async function loadCatalogIfPresent() {
     try {
-      const res = await fetch('/catalog.json', { cache: 'no-store' });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2000); // 2s max
+      const res = await fetch('/catalog.json', { cache: 'no-store', signal: controller.signal });
+      clearTimeout(timeout);
       if (!res.ok) return;
       const data = await res.json();
       if (Array.isArray(data?.products) && data.products.length > 0) PRODUCTS = data.products;
