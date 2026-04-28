@@ -2565,9 +2565,9 @@ body.nav-open { overflow: hidden; }
   .about-hero { padding: 4rem 1.2rem 2.5rem; }
   .how-it-works-grid { grid-template-columns: 1fr; }
 
-  .mega-sale-banner { font-size: 0.78rem; padding: 7px 14px; }
-  .mega-sale-inner { gap: 6px; flex-wrap: wrap; }
-  .mega-sale-close { right: 8px; }
+  .mega-sale-banner { font-size: 0.78rem; padding: 7px 12px; }
+  .mega-sale-inner { gap: 6px; flex-wrap: wrap; justify-content: center; padding-right: 0; }
+  .mega-sale-close { margin-left: 6px; font-size: 1rem; }
 
   .search-autocomplete-dropdown { max-height: 300px; }
 }
@@ -2673,10 +2673,12 @@ body.nav-open { overflow: hidden; }
   border: none;
   color: #070810;
   cursor: pointer;
-  position: absolute;
-  right: 20px;
   font-size: 1.2rem;
   opacity: 0.8;
+  padding: 0 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 .mega-sale-close:hover { opacity: 1; }
 .mega-sale-pulse {
