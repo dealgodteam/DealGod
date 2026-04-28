@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ================================================================ */
   let activeCategory = 'All';
   let searchQuery    = '';
-  let sortMode       = 'default';
+  let sortMode       = 'best';
   let activePriceRange = 'all';
   let wishlist       = safeStorage.get('dealgod-wishlist', []);
   let recentlyViewed = safeStorage.get('dealgod-recent', []);
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return matchCat && matchSearch && matchPrice;
     });
 
-    // Sort
+    // Sort - default to best deals (by dealScore, then discount, then rating)
     switch (sortMode) {
       case 'price-low':
         list.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
@@ -259,7 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'discount':
         list.sort((a, b) => parseDiscount(b.discount) - parseDiscount(a.discount));
         break;
+      case 'best':
       default:
+        list.sort((a, b) => {
+          const scoreA = (a.dealScore || 0) * 100 + parseDiscount(a.discount) + (a.rating * 10);
+          const scoreB = (b.dealScore || 0) * 100 + parseDiscount(b.discount) + (b.rating * 10);
+          return scoreB - scoreA;
+        });
         break;
     }
 
@@ -444,39 +450,41 @@ document.addEventListener('DOMContentLoaded', () => {
       : '';
 
     card.innerHTML = `
-      <div class="card-image-wrap">
-        <img
-          class="card-image"
-          data-src="${escapeHtml(product.image)}"
-          alt="${escapeHtml(safeTitle)}"
-          loading="lazy"
-          decoding="async"
-          referrerpolicy="no-referrer"
-        />
-        ${badgeHtml}
-        <span class="card-discount">-${escapeHtml(product.discount)}</span>
-      </div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-category">${escapeHtml(product.category)}</span>
-          ${dealScoreHtml}
+      <a href="${affLink}" target="_blank" rel="noopener noreferrer sponsored" class="card-main-link" aria-label="${escapeHtml(safeTitle)} - ${escapeHtml(product.price)}">
+        <div class="card-image-wrap">
+          <img
+            class="card-image"
+            data-src="${escapeHtml(product.image)}"
+            alt="${escapeHtml(safeTitle)}"
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+          />
+          ${badgeHtml}
+          <span class="card-discount">-${escapeHtml(product.discount)}</span>
         </div>
-        <h2 class="card-title">${escapeHtml(safeTitle)}</h2>
-        <p class="card-desc">${escapeHtml(product.description)}</p>
-        <div class="card-rating">
-          <div class="stars" aria-label="Rating: ${safeRating} out of 5">${stars}</div>
-          <span class="rating-score">${safeRating}</span>
-          <span class="rating-count">(${safeReviews.toLocaleString('en-IN')} reviews)</span>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">${escapeHtml(product.category)}</span>
+            ${dealScoreHtml}
+          </div>
+          <h2 class="card-title">${escapeHtml(safeTitle)}</h2>
+          <p class="card-desc">${escapeHtml(product.description)}</p>
+          <div class="card-rating">
+            <div class="stars" aria-label="Rating: ${safeRating} out of 5">${stars}</div>
+            <span class="rating-score">${safeRating}</span>
+            <span class="rating-count">(${safeReviews.toLocaleString('en-IN')} reviews)</span>
+          </div>
+          ${bankOfferHtml}
+          <div class="card-price">
+            <span class="price-current">${escapeHtml(product.price)}</span>
+            <span class="price-original">${escapeHtml(product.originalPrice)}</span>
+          </div>
+          ${priceHistoryHtml}
+          ${countdownHtml}
+          ${couponHtml}
         </div>
-        ${bankOfferHtml}
-        <div class="card-price">
-          <span class="price-current">${escapeHtml(product.price)}</span>
-          <span class="price-original">${escapeHtml(product.originalPrice)}</span>
-        </div>
-        ${priceHistoryHtml}
-        ${countdownHtml}
-        ${couponHtml}
-      </div>
+      </a>
       <div class="card-footer">
         <a
           href="${affLink}"
@@ -1524,7 +1532,12 @@ document.addEventListener('DOMContentLoaded', () => {
           c.setAttribute('aria-pressed', c.dataset.range === savedPrice ? 'true' : 'false');
         });
       }
-      if (savedSort && sortSelect) sortSelect.value = savedSort;
+      if (savedSort && sortSelect) {
+        sortSelect.value = savedSort;
+        sortMode = savedSort;
+      } else {
+        sortMode = 'best'; // Default to best deals
+      }
     } catch (_) { /* ignore */ }
 
     renderProducts();

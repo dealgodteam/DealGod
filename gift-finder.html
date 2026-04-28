@@ -25,6 +25,113 @@
 
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Gift Finder Page Specific Styles */
+    .gf-page {
+      padding-top: 100px !important;
+      min-height: 70vh;
+    }
+    .gf-page .gift-finder-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .gf-page .gift-finder-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .gf-page .gift-finder-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gf-page .gift-finder-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .gf-page .gift-finder-form {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      align-items: end;
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+    .gf-page .gf-select-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .gf-page .gf-select-group select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 20px;
+      padding-right: 40px;
+    }
+    .gf-page .gf-select-group select:focus {
+      border-color: var(--accent-primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.1);
+    }
+    .gf-page .gf-select-group select option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      padding: 10px;
+    }
+    .gf-page .gf-submit-btn {
+      padding: 14px 32px;
+      background: var(--gradient-accent);
+      color: #070810;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      height: fit-content;
+    }
+    .gf-page .gf-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 152, 0, 0.35);
+    }
+    .gf-page .gf-results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .gf-page { padding-top: 80px !important; }
+      .gf-page .gift-finder-header h1 { font-size: 1.8rem; }
+      .gf-page .gift-finder-form { grid-template-columns: 1fr; }
+      .gf-page .gf-results-grid { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .gf-page .gf-results-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation -->
@@ -117,6 +224,9 @@
       <div class="gf-results-wrap" id="gf-results-wrap" style="display:none;">
         <h3>Recommended for you:</h3>
         <div class="gf-results-grid" id="gf-results-grid"></div>
+        <div class="gf-back-link" style="margin-top: 2rem; text-align: center;">
+          <a href="index.html#products" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">← Browse all 125+ deals</a>
+        </div>
       </div>
     </div>
   </section>
@@ -162,12 +272,14 @@
 
       function buildCard(product) {
         const card = document.createElement('div');
-        card.className = 'product-card';
+        card.className = 'product-card visible';
+        const affLink = `https://www.amazon.in/dp/${product.asin}?tag=${SITE_CONFIG?.affiliateTag || 'dealgodteam-21'}&linkCode=ogi&th=1&psc=1`;
         card.innerHTML = `
-          <a href="${product.url || '#'}" target="_blank" rel="noopener noreferrer sponsored" class="card-link">
+          <a href="${affLink}" target="_blank" rel="noopener noreferrer sponsored" class="card-link">
             <div class="card-image-wrap">
-              <img src="${product.image}" alt="${product.title}" class="card-image" loading="lazy" referrerpolicy="no-referrer" />
+              <img src="${product.image}" alt="${product.title}" class="card-image" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://placehold.co/300x200/1e1e2a/555575?text=No+Image';" />
               ${product.discount ? `<span class="card-discount">${product.discount}</span>` : ''}
+              ${product.badge ? `<span class="card-badge">${product.badge}</span>` : ''}
             </div>
             <div class="card-body">
               <span class="card-category">${product.category}</span>
@@ -176,6 +288,7 @@
                 <span class="price-current">${product.price}</span>
                 ${product.originalPrice ? `<span class="price-original">${product.originalPrice}</span>` : ''}
               </div>
+              ${product.rating ? `<div class="card-rating"><span class="stars">★ ${product.rating}</span></div>` : ''}
             </div>
           </a>
         `;
@@ -185,25 +298,43 @@
       if (form) {
         form.addEventListener('submit', function(e) {
           e.preventDefault();
+          const recipient = document.getElementById('gf-recipient').value;
+          const occasion = document.getElementById('gf-occasion').value;
           const budget = document.getElementById('gf-budget').value;
+
+          if (!recipient || !occasion || !budget) {
+            alert('Please fill in all fields to find the perfect gift!');
+            return;
+          }
+
           let maxPrice = Infinity;
           if (budget === 'under500') maxPrice = 500;
           else if (budget === 'under2000') maxPrice = 2000;
           else if (budget === 'under5000') maxPrice = 5000;
           else if (budget === 'under10000') maxPrice = 10000;
 
+          // Filter products by price
           const filtered = PRODUCTS.filter(p => parsePrice(p.price) <= maxPrice);
-          const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+
+          // Smart filtering based on recipient
+          let prioritized = filtered;
+          if (recipient === 'kids' || recipient === 'myself') {
+            prioritized = filtered.filter(p => ['Gaming', 'Toys & Games', 'Electronics'].includes(p.category)).concat(filtered);
+          } else if (recipient === 'parents' || recipient === 'partner') {
+            prioritized = filtered.filter(p => ['Home & Kitchen', 'Health & Beauty', 'Smart Home'].includes(p.category)).concat(filtered);
+          }
+
+          const shuffled = [...prioritized].sort(() => 0.5 - Math.random());
           const selected = shuffled.slice(0, 6);
 
           resultsGrid.innerHTML = '';
           if (selected.length === 0) {
-            resultsGrid.innerHTML = '<p style="color:var(--text-muted)">No matching gifts found. Try a different budget!</p>';
+            resultsGrid.innerHTML = '<p style="color:var(--text-muted); text-align: center; padding: 2rem;">No matching gifts found. Try a different budget!</p>';
           } else {
             selected.forEach(p => resultsGrid.appendChild(buildCard(p)));
           }
           resultsWrap.style.display = 'block';
-          resultsWrap.scrollIntoView({ behavior: 'smooth' });
+          resultsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       }
     })();
